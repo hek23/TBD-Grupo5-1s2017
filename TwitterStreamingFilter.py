@@ -252,6 +252,7 @@ class TwitterStreamListener(tweepy.StreamListener):
         tiempo = datetime.datetime.now()
         global i
         global contador_maps
+        global time_start
         if (tiempo.day != time_start.day):
             #Se resetea la api
             contador_maps = 0
