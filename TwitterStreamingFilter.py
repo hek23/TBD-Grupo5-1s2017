@@ -90,9 +90,8 @@ def get_words():
 #Funcion para insertar un documento con MongoDB
 #Entrada: diccionario o documento con formato JSON
 def mongo_insert(doc):
-    #Se abre la conexión a Mongo
-    client = pymongo.MongoClient('localhost',27017)
-
+    #Se abre la conexión a Mongo 
+    client = pymongo.Connection()
     db = client.politica
     #Se procede con la inserción Solo si tiene locación.
     if (doc['place']['geo_center']['latitude'] == 0) and (doc['place']['geo_center']['longitude'] == 0):
@@ -136,7 +135,10 @@ def get_location_info(location):
     global contador_maps
     contador_maps = contador_maps + 1
     #Si no hay un solo resultado, implica que no hay una ubicacion especifica
-    if (len(geocode_result)<2):
+    print geocode_result
+    print len(geocode_result)
+    if (len(geocode_result)<1):
+        print "geocode ok"
         return [0,0]
     else:
         print "En get_location_info, geocode1else"
@@ -231,7 +233,6 @@ def twitterFilter(status):
             global contador_maps
             global API_CRITICAL_LIMIT
             if (contador_maps < API_LIMIT):
-
                 place_info = get_location_info(info_tweet['place']['name_place'])
                 info_tweet['place']['geo_center']['latitude'] = place_info[0]
                 info_tweet['place']['geo_center']['longitude'] = place_info[1]
