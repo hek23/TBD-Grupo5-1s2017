@@ -51,6 +51,7 @@ info_user = 0
 #Cuenta los tweets que no poseen ubicación generable
 no_place = 0
 #Contador de tweets extraidos
+i = 0
 #############################################################################
 #Funcion para escribir metrica en archivo
 def metrica():
