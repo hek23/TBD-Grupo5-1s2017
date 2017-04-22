@@ -90,7 +90,7 @@ def get_words():
 #Entrada: diccionario o documento con formato JSON
 def mongo_insert(doc):
     #Se abre la conexión a Mongo
-    client = pymongo.Connection()
+    client = pymongo.MongoClient('localhost',27017)
     db = client.politica
     #Se procede con la inserción Solo si tiene locación.
     if (doc['place']['geo_center']['latitude'] == 0) and (doc['place']['geo_center']['longitude'] == 0):
