@@ -131,6 +131,7 @@ def get_center_point(points):
 #en la latitud y longitud
 def get_location_info(location):
     # Consulta por la dirección
+    global gmaps
     geocode_result = gmaps.geocode(location)
     global contador_maps
     contador_maps = contador_maps + 1
