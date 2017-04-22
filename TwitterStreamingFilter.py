@@ -1,5 +1,8 @@
 #*-*coding: utf-8*-*
 from __future__ import unicode_literals
+import googlemaps
+from datetime import datetime
+import datetime
 import sys
 import pymongo
 import tweepy
@@ -12,21 +15,93 @@ from tweepy import OAuthHandler
 #Modificado para Python 2.7 y filtrado
 #Este código trata la información obtenida de twitter y la filtra, además de tratar los carcateres especiales
 #Autor: Héctor Fuentealba
-#Version 1.1
+#Version 1.2
 #Correcciones respecto a v1.0:
 # Corregido bug que generaba fallo crítico al recibir ciertos carácteres
 # Corregido tratamiento de caracteres Unicode
 # Corregido error de cálculo en coordenadas geolocalizadas
+#Correcciones respecto a v1.1:
+# Se generan consultas automaticas a googleMaps en el caso de no tener locación
+# Se limitan las consultas a GoogleMaps por el numero free de ellas en un limite de Tiempo
+# No se insertan los tweets sin geolocalizacion
+
+#############################################################################
+#CARGA DE ELEMENTOS DE SISTEMA Y ENCODING
 reload(sys)
 sys.setdefaultencoding('utf8')
-i=0
+#############################################################################
+#VARIABLES GLOBALES
+#Objeto que se conecta con GoogleMaps
+gmaps = googlemaps.Client(key='AIzaSyCXqoIj7e-cqQkWBR-KpP_AIAf34sUWNs4')
+#Objetos de respaldo. Lista de keys válidas
+gmaps_backup = []
+#Contador de consultas a Api de Gmaps, para delimitarlas
+contador_maps = 0
+#Tiempo al inicio
+time_start = datetime.datetime.now()
+#Limite de la API
+API_LIMIT = 2500
+#Limite Critico despues de pago
+API_CRITICAL_LIMIT = 102500
+#Contadores para métricas de medicion
+#Cuenta los tweets que tienen lugar asociado
+has_place = 0
+#Cuenta los tweets de los cuales se debe sacar info del usuario
+info_user = 0
+#Cuenta los tweets que no poseen ubicación generable
+no_place = 0
+#Contador de tweets extraidos
+#############################################################################
+#Funcion para escribir metrica en archivo
+def metrica():
+    global i
+    global has_place
+    global info_user
+    global no_place
+    global contador_maps
+    archivo = open('/home/hek23/metrica.dat', 'w')
+    support_string = "Se realizaron " + str(i) + "consultas a Twitter"
+    archivo.writelines(support_string)
+    support_string = "Se realizaron " + srt(contador_maps) + "consultas a GoogleMaps"
+    archivo.writelines(support_string)
+    support_string = str(no_place) + " tweets no poseen informacion geolocalizable"
+    archivo.writelines(support_string)
+    support_string = str(has_place) + " tweets si poseen informacion del lugar de origen"
+    archivo.writelines(support_string)
+    support_string = "En " + str(info_user) + " tweets se debio utilizar la info del usuario para localizarlo"
+    archivo.writelines(support_string)
+    archivo.close()
+
+#Funcion para obtener palabras de archivo
+def get_words():
+    #Apertura de archivo
+    archivo = open('words.dat', 'r')
+    words = []
+    #Se filtran las palabras y genera la lista.
+    for linea in archivo:
+        minilista = linea.split(' ')
+        for palabra in minilista:
+            words.append(palabra.strip())
+    #Se cierra el archivo
+    archivo.close()
+    #Se retorna la lista de palabras
+    return words
 #Funcion para insertar un documento con MongoDB
+#Entrada: diccionario o documento con formato JSON
 def mongo_insert(doc):
+    #Se abre la conexión a Mongo
     client = pymongo.Connection()
     db = client.politica
+    #Se procede con la inserción Solo si tiene locación.
+    if (doc['place']['geo_center']['latitude'] == 0) and (doc['place']['geo_center']['longitude'] == 0):
+        #Por ahora se Cuenta
+        global no_place
+        no_place = no_place + 1
+    #    return 0
+    #else :
     id=db.tweets.insert(doc)
+        #Se retorna el id del documento insertado
     return id
-
 #Funcion para calcular el punto central coordenado
 #Entrada: Lista de puntos del tipo [[LONG, LAT], [LONG, LAT]] de tamaño indeterminado
 #Salida: Par que indica el punto central para ubicación referenciada, del tipo [LAT, LONG]
@@ -48,6 +123,23 @@ def get_center_point(points):
     #Se retornan las coordenadas como par Lat, Long
     return latitude, longitude
 
+#Función que obtiene el diccionario con la información de la locación
+#de la consulta de Google. Refiere a la información administrativa/politica y la locación
+#en la latitud y longitud
+def get_location_info(location):
+    # Consulta por la dirección
+    geocode_result = gmaps.geocode(location)
+    global contador_maps
+    contador_maps = contador_maps + 1
+    #Si no hay un solo resultado, implica que no hay una ubicacion especifica
+    if (len(geocode_result)!=1):
+        return [0,0]
+    else:
+        geocode_points=geocode_result[0]['geometry']['location']
+    # Ahora se retornan los puntos como par [Lat][Long]
+    country_info = geocode_result[0]['address_components']
+    return geocode_points['lat'], geocode_points['lng'], country_info[len(country_info)-1]
+
 def twitterFilter(status):
     reload(sys)
     sys.setdefaultencoding('utf8')
@@ -64,8 +156,8 @@ def twitterFilter(status):
     'tweet_lang' : str(status.lang),
     'user': {
         'user_id' : int(status.user.id),
-        'full_username': status.user.name.encode('ascii','ignore'),
         'userscreen': status.user.screen_name.encode('ascii','ignore'),
+        'full_username': status.user.name.encode('ascii','ignore'),
         'following_count': int(status.user.friends_count),
         'followers_count': int(status.user.followers_count)},
     'place': {
@@ -73,8 +165,8 @@ def twitterFilter(status):
         'country_code' : "None",
         'name_place' : "None",
         'geo_center': {
-            'latitude' : "None",
-            'longitude': "None"
+            'latitude' : 0,
+            'longitude': 0
         }
     },
     'original_id': "None",
@@ -87,6 +179,11 @@ def twitterFilter(status):
     #Ahora se generan las coordenadas
     #Se privilegiará la localización con GPS
     if (hasattr(status, 'place') and status.place is not None):
+        ####################################################################################
+        #Se agrega contador para métrica
+        global has_place
+        has_place = has_place + 1
+        ####################################################################################
         if status.place.country is not None:
             info_tweet['place']['country'] = status.place.country.encode('ascii','ignore')
         else:
@@ -108,13 +205,27 @@ def twitterFilter(status):
             #else:
                 #Place no tiene posición.
         #else
-            #No tiene dibujo o coordenadas, por tanto se obtiene el punto (o al menos esa es la idea)
-
-            #Falta busqueda y obtencion del punto
     else:
         #No tiene el lugar definido en el tweet, así que se aplica la ubicación por defecto del usuario
+        ###################################################################################################
+        #Se agrega al contador para definición de métrica
+        global info_user
+        info_user = info_user + 1
+        ###################################################################################################
         if status.user.location is not None:
             info_tweet['place']['name_place'] = status.user.location.encode('ascii','ignore')
+            #Ahora se extrae la info del lugar
+            #Si es la consulta anterior a la 2500, entonces se realiza
+            #Por ser medición metrica, se aceptará la cantidad crítica diaria
+            global contador_maps
+            global API_CRITICAL_LIMIT
+            if (contador_maps < API_LIMIT):
+                place_info = get_location_info(info_tweet['place']['name_place'])
+                info_tweet['place']['geo_center']['latitude'] = place_info[0]
+                info_tweet['place']['geo_center']['longitude'] = place_info[1]
+                #Luego, el pais y código del mismo
+                info_tweet['place']['country'] = place_info[2]['long_name']
+                info_tweet['place']['country_code'] = place_info[2]['short_name']
         else:
             info_tweet['place']['name_place'] = status.user.location
     #Se agregan los hashtags...
@@ -122,7 +233,6 @@ def twitterFilter(status):
     while (len(status.entities['hashtags']) > 0):
             #Agrega los hashtags!
             tags.append(status.entities['hashtags'].pop()['text'].encode('ascii','ignore'))
-
     info_tweet['hashtags'] = tags
     #Si es retweet...
     if hasattr(status, 'retweeted_status'):
@@ -132,26 +242,26 @@ def twitterFilter(status):
     #Por mientras, se imprimirá
     info_tweet_JSON = json.dumps(info_tweet)
     #print info_tweet_JSON
-    mongo_insert(info_tweet)
+    mongo_id = mongo_insert(info_tweet)
+    #write_tweet_file(info_tweet_JSON, mongo_id)
     return info_tweet['tweet_id']
 
 class TwitterStreamListener(tweepy.StreamListener):
-    """ A listener handles tweets are the received from the stream.
-    This is a basic listener that just print s received tweets to stdout.
-    """
 
     def on_status(self, status):
+        tiempo = datetime.datetime.now()
         global i
-        twitterFilter(status)
-        if (i<1):
-            i= i+1
+        global contador_maps
+        if (tiempo.day != time_start.day):
+            #Se resetea la api
+            contador_maps = 0
+            time_start = tiempo
+        while (contador_maps < API_CRITICAL_LIMIT):
+            twitterFilter(status)
+            i = i+1
             return True
-        else:
-            return False
-        return True
-
-        #
-
+        metrica()
+        return False
     # Twitter error list : https://dev.twitter.com/overview/api/response-codes
 
     def on_error(self, status_code):
@@ -197,7 +307,7 @@ class TwitterStreamListener(tweepy.StreamListener):
             print "Gateway timeout"
             print "The Twitter servers are up, but the request couldn’t be serviced due to some failure within our stack. Try again later."
         else:
-            return True
+            print "ERROR"
 
         return False
 
@@ -220,4 +330,4 @@ if __name__ == '__main__':
     streamListener = TwitterStreamListener()
     myStream = tweepy.Stream(auth=api.auth, listener=streamListener)
 
-    myStream.filter(track=['Tbdtest5'])
+    myStream.filter(track=['Trump'], stall_warnings=True) #podria ser util poner async=True
