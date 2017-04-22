@@ -92,6 +92,7 @@ def get_words():
 def mongo_insert(doc):
     #Se abre la conexión a Mongo
     client = pymongo.MongoClient('localhost',27017)
+    print "Conectando a Mongo"
     db = client.politica
     #Se procede con la inserción Solo si tiene locación.
     if (doc['place']['geo_center']['latitude'] == 0) and (doc['place']['geo_center']['longitude'] == 0):
@@ -108,6 +109,7 @@ def mongo_insert(doc):
 #Salida: Par que indica el punto central para ubicación referenciada, del tipo [LAT, LONG]
 def get_center_point(points):
     #Se inicializan las variables latitud y longitud
+    print "Calculando centro"
     latitude = 0
     longitude = 0
     #Para cada punto de la lista que define el polígono
@@ -132,8 +134,9 @@ def get_location_info(location):
     geocode_result = gmaps.geocode(location)
     global contador_maps
     contador_maps = contador_maps + 1
+    print "En get_location_info"
     #Si no hay un solo resultado, implica que no hay una ubicacion especifica
-    if (len(geocode_result)!=1):
+    if (len(geocode_result)<2):
         return [0,0]
     else:
         geocode_points=geocode_result[0]['geometry']['location']
@@ -184,6 +187,7 @@ def twitterFilter(status):
         #Se agrega contador para métrica
         global has_place
         has_place = has_place + 1
+        print "Hay GPS"
         ####################################################################################
         if status.place.country is not None:
             info_tweet['place']['country'] = status.place.country.encode('ascii','ignore')
@@ -199,7 +203,9 @@ def twitterFilter(status):
             info_tweet['place']['name_place'] = status.place.full_name
 
         if (hasattr(status.place, 'bounding_box') and hasattr(status.place.bounding_box,'coordinates')):
+            print "Revisando caja"
             if (len(status.place.bounding_box.coordinates)>0):
+                print "Si hay caja"
                 center_point = get_center_point(status.place.bounding_box.coordinates[0])
                 info_tweet['place']['geo_center']['latitude'] = center_point[0]
                 info_tweet['place']['geo_center']['longitude'] = center_point[1]
@@ -212,6 +218,7 @@ def twitterFilter(status):
         #Se agrega al contador para definición de métrica
         global info_user
         info_user = info_user + 1
+        print "Sacando info del user"
         ###################################################################################################
         if status.user.location is not None:
             info_tweet['place']['name_place'] = status.user.location.encode('ascii','ignore')
@@ -221,6 +228,7 @@ def twitterFilter(status):
             global contador_maps
             global API_CRITICAL_LIMIT
             if (contador_maps < API_LIMIT):
+                print "Aun no cumple API"
                 place_info = get_location_info(info_tweet['place']['name_place'])
                 info_tweet['place']['geo_center']['latitude'] = place_info[0]
                 info_tweet['place']['geo_center']['longitude'] = place_info[1]
@@ -231,12 +239,14 @@ def twitterFilter(status):
             info_tweet['place']['name_place'] = status.user.location
     #Se agregan los hashtags...
     tags = []
+    print "Agregando tags"
     while (len(status.entities['hashtags']) > 0):
-            #Agrega los hashtags!
-            tags.append(status.entities['hashtags'].pop()['text'].encode('ascii','ignore'))
+        #Agrega los hashtags!
+        tags.append(status.entities['hashtags'].pop()['text'].encode('ascii','ignore'))
     info_tweet['hashtags'] = tags
     #Si es retweet...
     if hasattr(status, 'retweeted_status'):
+        print "recursivo!"
         doc_id = twitterFilter(status.retweeted_status)
         info_tweet['original_id'] = doc_id
     #AQUI SE ENVIA A MONGO!
