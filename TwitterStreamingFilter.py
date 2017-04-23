@@ -90,7 +90,7 @@ def get_words():
 #Funcion para insertar un documento con MongoDB
 #Entrada: diccionario o documento con formato JSON
 def mongo_insert(doc):
-    #Se abre la conexión a Mongo 
+    #Se abre la conexión a Mongo
     client = pymongo.Connection()
     db = client.politica
     #Se procede con la inserción Solo si tiene locación.
@@ -108,7 +108,6 @@ def mongo_insert(doc):
 #Salida: Par que indica el punto central para ubicación referenciada, del tipo [LAT, LONG]
 def get_center_point(points):
     #Se inicializan las variables latitud y longitud
-
     latitude = 0
     longitude = 0
     #Para cada punto de la lista que define el polígono
@@ -135,18 +134,18 @@ def get_location_info(location):
     global contador_maps
     contador_maps = contador_maps + 1
     #Si no hay un solo resultado, implica que no hay una ubicacion especifica
-    print geocode_result
-    print len(geocode_result)
+    #print geocode_result
+    #print len(geocode_result)
     if (len(geocode_result)<1):
-        print "geocode ok"
+        #print "geocode ok"
         return [0,0]
     else:
-        print "En get_location_info, geocode1else"
+        #print "En get_location_info, geocode1else"
         geocode_points=geocode_result[0]['geometry']['location']
     # Ahora se retornan los puntos como par [Lat][Long]
-    print "En get_location_info, country_info"
+    #print "En get_location_info, country_info"
     country_info = geocode_result[0]['address_components']
-    print "retorno"
+    #print "retorno"
     return geocode_points['lat'], geocode_points['lng'], country_info[len(country_info)-1]
 
 def twitterFilter(status):
@@ -250,13 +249,12 @@ def twitterFilter(status):
     info_tweet['hashtags'] = tags
     #Si es retweet...
     if hasattr(status, 'retweeted_status'):
-
         doc_id = twitterFilter(status.retweeted_status)
         info_tweet['original_id'] = doc_id
     #AQUI SE ENVIA A MONGO!
     #Por mientras, se imprimirá
     info_tweet_JSON = json.dumps(info_tweet)
-    #print info_tweet_JSON
+    print info_tweet_JSON
     mongo_id = mongo_insert(info_tweet)
     #write_tweet_file(info_tweet_JSON, mongo_id)
     return info_tweet['tweet_id']
@@ -275,6 +273,7 @@ class TwitterStreamListener(tweepy.StreamListener):
         while (contador_maps < API_CRITICAL_LIMIT):
             twitterFilter(status)
             i = i+1
+            print i
             return True
         metrica()
         return False
