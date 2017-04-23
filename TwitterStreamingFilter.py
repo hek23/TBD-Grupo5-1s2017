@@ -155,7 +155,7 @@ def twitterFilter(status):
     #Por ahora se fabrica un JSON que se imprime en un archivo de texto.
     #Lo ideal es que este Json se transfiera de inmediato a Mongo
     #El ID del tweet puede ser Int, dado que dejo de tener limite en Python.
-    print status.entities['hashtags']
+    #print status.entities['hashtags']
     #Se enuncia el diccionario que contiene la información del tweet
     info_tweet= {'tweet_id': int(status.id_str),
     #Se agrega el contenido del tweet
