@@ -135,18 +135,18 @@ def get_location_info(location):
     global contador_maps
     contador_maps = contador_maps + 1
     #Si no hay un solo resultado, implica que no hay una ubicacion especifica
-    print geocode_result
-    print len(geocode_result)
+    #print geocode_result
+    #print len(geocode_result)
     if (len(geocode_result)<1):
-        print "geocode ok"
+        #print "geocode ok"
         return [0,0]
     else:
-        print "En get_location_info, geocode1else"
+        #print "En get_location_info, geocode1else"
         geocode_points=geocode_result[0]['geometry']['location']
     # Ahora se retornan los puntos como par [Lat][Long]
-    print "En get_location_info, country_info"
+    #print "En get_location_info, country_info"
     country_info = geocode_result[0]['address_components']
-    print "retorno"
+    #print "retorno"
     return geocode_points['lat'], geocode_points['lng'], country_info[len(country_info)-1]
 
 def twitterFilter(status):
@@ -259,7 +259,7 @@ def twitterFilter(status):
     #AQUI SE ENVIA A MONGO!
     #Por mientras, se imprimirá
     info_tweet_JSON = json.dumps(info_tweet)
-    print info_tweet_JSON
+    #print info_tweet_JSON
     mongo_id = mongo_insert(info_tweet)
     #write_tweet_file(info_tweet_JSON, mongo_id)
     return info_tweet['tweet_id']
