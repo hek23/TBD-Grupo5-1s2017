@@ -5,6 +5,7 @@ from datetime import datetime
 import datetime
 import sys
 import pymongo
+from pymongo import MongoClient
 import tweepy
 import socket
 import requests
@@ -90,8 +91,8 @@ def get_words():
 #Funcion para insertar un documento con MongoDB
 #Entrada: diccionario o documento con formato JSON
 def mongo_insert(doc):
-    #Se abre la conexión a Mongo
-    client = pymongo.Connection()
+    #Se abre la  a Mongo
+    client = MongoClient()
     db = client.politica
     #Se procede con la inserción Solo si tiene locación.
     if (doc['place']['geo_center']['latitude'] == 0) and (doc['place']['geo_center']['longitude'] == 0):
@@ -134,18 +135,18 @@ def get_location_info(location):
     global contador_maps
     contador_maps = contador_maps + 1
     #Si no hay un solo resultado, implica que no hay una ubicacion especifica
-    #print geocode_result
-    #print len(geocode_result)
+    print geocode_result
+    print len(geocode_result)
     if (len(geocode_result)<1):
-        #print "geocode ok"
+        print "geocode ok"
         return [0,0]
     else:
-        #print "En get_location_info, geocode1else"
+        print "En get_location_info, geocode1else"
         geocode_points=geocode_result[0]['geometry']['location']
     # Ahora se retornan los puntos como par [Lat][Long]
-    #print "En get_location_info, country_info"
+    print "En get_location_info, country_info"
     country_info = geocode_result[0]['address_components']
-    #print "retorno"
+    print "retorno"
     return geocode_points['lat'], geocode_points['lng'], country_info[len(country_info)-1]
 
 def twitterFilter(status):
@@ -154,7 +155,7 @@ def twitterFilter(status):
     #Por ahora se fabrica un JSON que se imprime en un archivo de texto.
     #Lo ideal es que este Json se transfiera de inmediato a Mongo
     #El ID del tweet puede ser Int, dado que dejo de tener limite en Python.
-    #print status.entities['hashtags']
+    print status.entities['hashtags']
     #Se enuncia el diccionario que contiene la información del tweet
     info_tweet= {'tweet_id': int(status.id_str),
     #Se agrega el contenido del tweet
@@ -236,8 +237,12 @@ def twitterFilter(status):
                 info_tweet['place']['geo_center']['latitude'] = place_info[0]
                 info_tweet['place']['geo_center']['longitude'] = place_info[1]
                 #Luego, el pais y código del mismo
-                info_tweet['place']['country'] = place_info[2]['long_name']
-                info_tweet['place']['country_code'] = place_info[2]['short_name']
+                try:
+                    info_tweet['place']['country'] = place_info[2]['long_name']
+                    info_tweet['place']['country_code'] = place_info[2]['short_name']
+                except:
+                    info_tweet['place']['country'] = None
+                    info_tweet['place']['country_code'] = None
         else:
             info_tweet['place']['name_place'] = status.user.location
     #Se agregan los hashtags...
@@ -345,4 +350,4 @@ if __name__ == '__main__':
     streamListener = TwitterStreamListener()
     myStream = tweepy.Stream(auth=api.auth, listener=streamListener)
 
-    myStream.filter(track=['Trump'], stall_warnings=True) #podria ser util poner async=True
+    myStream.filter(track=['Trump'], stall_warnings=True, async=True) #podria ser util poner async=True
