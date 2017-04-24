@@ -16,7 +16,7 @@ from tweepy import OAuthHandler
 #Modificado para Python 2.7 y filtrado
 #Este código trata la información obtenida de twitter y la filtra, además de tratar los carcateres especiales
 #Autor: Héctor Fuentealba
-#Version 1.2
+#Version 1.3
 #Correcciones respecto a v1.0:
 # Corregido bug que generaba fallo crítico al recibir ciertos carácteres
 # Corregido tratamiento de caracteres Unicode
@@ -25,6 +25,8 @@ from tweepy import OAuthHandler
 # Se generan consultas automaticas a googleMaps en el caso de no tener locación
 # Se limitan las consultas a GoogleMaps por el numero free de ellas en un limite de Tiempo
 # No se insertan los tweets sin geolocalizacion
+#Correcciones respecto a v1.2:
+#Se corrige error de lectura incompleta.
 
 #############################################################################
 #CARGA DE ELEMENTOS DE SISTEMA Y ENCODING
@@ -53,6 +55,10 @@ info_user = 0
 no_place = 0
 #Contador de tweets extraidos
 i = 0
+#Contador de tweets perdidos
+perdida = 0
+#Tiempo al inicio de la aplicacion
+tiempo_inicio_serv = datetime.datetime.now()
 #############################################################################
 #Funcion para escribir metrica en archivo
 def metrica():
@@ -61,7 +67,9 @@ def metrica():
     global info_user
     global no_place
     global contador_maps
-    archivo = open('/home/hek23/metrica.dat', 'w')
+    global perdida
+    global tiempo_inicio_serv
+    archivo = open('metrica.dat', 'w')
     support_string = "Se realizaron " + str(i) + "consultas a Twitter"
     archivo.writelines(support_string)
     support_string = "Se realizaron " + srt(contador_maps) + "consultas a GoogleMaps"
@@ -71,6 +79,10 @@ def metrica():
     support_string = str(has_place) + " tweets si poseen informacion del lugar de origen"
     archivo.writelines(support_string)
     support_string = "En " + str(info_user) + " tweets se debio utilizar la info del usuario para localizarlo"
+    archivo.writelines(support_string)
+    support_string = "Se han generado " + str(perdida) + " caidas"
+    archivo.writelines(support_string)
+    support_string = "El tiempo de ejecución fué " + str(datetime.datetime.now() - tiempo_inicio_serv)
     archivo.writelines(support_string)
     archivo.close()
 
@@ -348,6 +360,22 @@ if __name__ == '__main__':
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, retry_count=10, retry_delay=5, retry_errors=5)
 
     streamListener = TwitterStreamListener()
-    myStream = tweepy.Stream(auth=api.auth, listener=streamListener)
 
-    myStream.filter(track=['Trump'], stall_warnings=True, async=True) #podria ser util poner async=True
+    #IncompleteReadException. Solución extraida de:
+    #http://stackoverflow.com/questions/28717249/error-while-fetching-tweets-with-tweepy
+    #Puede generar pérdida de información. Esta solución es momentánea mientras se implementa el stack con Kafka.
+	while True:
+    	try:
+        # Connect/reconnect the stream
+        	myStream = tweepy.Stream(auth=api.auth, listener=streamListener)
+        # DON'T run this approach async or you'll just create a ton of streams!
+        	myStream.filter(track=get_words()) #podria ser util poner async=True
+    	except IncompleteRead:
+        # Oh well, reconnect and keep trucking
+        	global perdida
+        	perdida = perdida + 1
+        	continue
+    	except KeyboardInterrupt:
+        # Or however you want to exit this loop
+        	myStream.disconnect()
+        	break
