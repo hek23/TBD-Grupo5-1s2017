@@ -41,7 +41,7 @@ sys.setdefaultencoding('utf8')
 #############################################################################
 #VARIABLES GLOBALES
 #Objeto que se conecta con GoogleMaps
-gmaps = googlemaps.Client(key='AIzaSyCXqoIj7e-cqQkWBR-KpP_AIAf34sUWNs4')
+gmaps = googlemaps.Client(key='INSERTE SU KEY DE MAPS')
 #Objetos de respaldo. Lista de keys válidas
 gmaps_backup = []
 #Contador de consultas a Api de Gmaps, para delimitarlas
@@ -351,10 +351,10 @@ class TwitterStreamListener(tweepy.StreamListener):
 
 if __name__ == '__main__':
 
-    access_token = "2714081630-4mRkgniGe6BJo8eLgH1pIHLkohBixNyLepoB7Fm"
-    access_token_secret = "fVLDgfMY9px0U5LBbo8kGIHXgBJ2gom7wFLuHAZF7JMX0"
-    consumer_key = "eCIzPizeVfsQAP1jKghF6OInI"
-    consumer_secret = "TMVg3dkicdroPmRvMS7Zp2yabEssKC1R5FYaBIXn3TIfQqybkf"
+    access_token = ""
+    access_token_secret = ""
+    consumer_key = ""
+    consumer_secret = ""
 
     # Authentication
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
