@@ -25,7 +25,7 @@ cat ~/.profile_backup ~/scripts/glassfishdir.d > ~/.profile
 source ~/.profile
 rm glassfish-4.0.zip
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
-echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 sudo apt-get -y update
 sudo apt-get -y install mongodb
 wget https://services.gradle.org/distributions/gradle-3.4.1-bin.zip
@@ -89,8 +89,12 @@ rm -rf mysql-connector-java-5.1.41
 sudo apt-get -y install libctemplate2v5 liblua5.1-0 python-paramiko python-pysqlite2
 sudo apt-get -y -f install
 sudo apt-get -y install mysql-workbench
-npm install -g generator-angular-fullstack
 rm -rf ~/scripts
+source ~/.profile
+
+#LIBRERIAS PARA PROYECTO, NO ES NECESARIO INSTALAS DE INMEDIATO
+#SI NO QUE CUANDO SE TENGA LISTA LA APP O PROYECTO
+npm install -g generator-angular-fullstack
 npm install npm@latest -g
 npm install --global gulp-cli
 npm install requirejs
@@ -99,12 +103,16 @@ npm install angular-ui-router
 npm install angular@1.6.3
 npm install d3
 source ~/.profile
+
+#LIBRERIAS DE PYTHON PARA EJECUCIÖN DE CODIGO STREAM
+pip install pymongo tweepy googlemaps
+
 ###########################################################PARTE MANUAL#######################################################################
 
 #CONFIGURANDO MYSQL AL INICIO
 sudo mysql_secure_installation
 ##OJO:
-#PASS PARA ROOT: root (con minusculas)
+#PASS PARA ROOT: root (con minusculas), o la pass que hayas puesto al inicio
 #VALIDATE PLUGIN: NO
 #CHANGE PASSWORD FOR ROOT..: NO
 #REMOVE ANNONYMUS USERS: YES
