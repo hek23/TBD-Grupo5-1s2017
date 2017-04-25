@@ -17,6 +17,12 @@ from tweepy import OAuthHandler
 #Este código trata la información obtenida de twitter y la filtra, además de tratar los carcateres especiales
 #Autor: Héctor Fuentealba
 #Version 1.3
+#Requisitos:
+#-Python 2.X.Y (se recomienda 2.7.12)
+#-PIP 9.X
+#-Googlemaps Python Library
+#-PyMongo v3.x
+#-Tweepy v3.x
 #Correcciones respecto a v1.0:
 # Corregido bug que generaba fallo crítico al recibir ciertos carácteres
 # Corregido tratamiento de caracteres Unicode
@@ -42,7 +48,7 @@ gmaps_backup = []
 contador_maps = 0
 #Tiempo al inicio
 time_start = datetime.datetime.now()
-#Limite de la API
+#Limite de la API GoogleMaps
 API_LIMIT = 2500
 #Limite Critico despues de pago
 API_CRITICAL_LIMIT = 102500
@@ -59,6 +65,9 @@ i = 0
 perdida = 0
 #Tiempo al inicio de la aplicacion
 tiempo_inicio_serv = datetime.datetime.now()
+#############################################################################
+#############################################################################
+##FUNCIONES GLOBALES ########################################################
 #############################################################################
 #Funcion para escribir metrica en archivo
 def metrica():
@@ -111,7 +120,7 @@ def mongo_insert(doc):
         #Por ahora se Cuenta
         global no_place
         no_place = no_place + 1
-    #    return 0
+    #   return 0
     #else :
     id=db.tweets.insert(doc)
         #Se retorna el id del documento insertado
@@ -136,7 +145,6 @@ def get_center_point(points):
     longitude = round (longitude,6)
     #Se retornan las coordenadas como par Lat, Long
     return latitude, longitude
-
 #Función que obtiene el diccionario con la información de la locación
 #de la consulta de Google. Refiere a la información administrativa/politica y la locación
 #en la latitud y longitud
@@ -196,7 +204,6 @@ def twitterFilter(status):
 
 
     #Se agregan los hashtags
-
     #Ahora se generan las coordenadas
     #Se privilegiará la localización con GPS
     if (hasattr(status, 'place') and status.place is not None):
@@ -259,9 +266,7 @@ def twitterFilter(status):
             info_tweet['place']['name_place'] = status.user.location
     #Se agregan los hashtags...
     tags = []
-
     while (len(status.entities['hashtags']) > 0):
-        #Agrega los hashtags!
         tags.append(status.entities['hashtags'].pop()['text'].encode('ascii','ignore'))
     info_tweet['hashtags'] = tags
     #Si es retweet...
@@ -269,13 +274,12 @@ def twitterFilter(status):
         doc_id = twitterFilter(status.retweeted_status)
         info_tweet['original_id'] = doc_id
     #AQUI SE ENVIA A MONGO!
-    #Por mientras, se imprimirá
     info_tweet_JSON = json.dumps(info_tweet)
     #print info_tweet_JSON
-    mongo_id = mongo_insert(info_tweet)
+    mongo_insert(info_tweet)
     #write_tweet_file(info_tweet_JSON, mongo_id)
     return info_tweet['tweet_id']
-
+###############################################################################################
 class TwitterStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
