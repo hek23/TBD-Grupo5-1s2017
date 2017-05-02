@@ -99,6 +99,11 @@ sudo ufw allow 'Nginx HTTP'
 sudo systemctl stop nginx
 sudo systemctl start nginx
 
+#INSTALACION DE CONECTOR MYSQL-PYTHON
+cd ~
+wget https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-cext_2.1.6-1ubuntu16.04_amd64.deb
+sudo dpkg -i mysql-connector-python-cext_2.1.6-1ubuntu16.04_amd64.deb
+
 #LIBRERIAS PARA PROYECTO, NO ES NECESARIO INSTALAR DE INMEDIATO
 #SI NO QUE CUANDO SE TENGA LISTA LA APP O PROYECTO
 #npm install -g generator-angular-fullstack

@@ -13,3 +13,7 @@ sudo apt-get -y install python-pip python-dev build-essential
 sudo pip install --upgrade pip
 #LIBRERIAS DE PYTHON PARA EJECUCIÖN DE CODIGO STREAM
 pip install pymongo tweepy googlemaps
+#INSTALACION DE CONECTOR MYSQL-PYTHON
+cd ~
+wget https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-cext_2.1.6-1ubuntu16.04_amd64.deb
+sudo dpkg -i mysql-connector-python-cext_2.1.6-1ubuntu16.04_amd64.deb
