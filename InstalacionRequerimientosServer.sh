@@ -92,16 +92,23 @@ sudo apt-get -y install mysql-workbench
 rm -rf ~/scripts
 source ~/.profile
 
-#LIBRERIAS PARA PROYECTO, NO ES NECESARIO INSTALAS DE INMEDIATO
+#SERVIDOR NGINX PARA REDIRECCION Y PUERTOS
+sudo apt-get update
+sudo apt-get install nginx
+sudo ufw allow 'Nginx HTTP'
+sudo systemctl stop nginx
+sudo systemctl start nginx
+
+#LIBRERIAS PARA PROYECTO, NO ES NECESARIO INSTALAR DE INMEDIATO
 #SI NO QUE CUANDO SE TENGA LISTA LA APP O PROYECTO
-npm install -g generator-angular-fullstack
-npm install npm@latest -g
-npm install --global gulp-cli
-npm install requirejs
-npm install -g yo
-npm install angular-ui-router
-npm install angular@1.6.3
-npm install d3
+#npm install -g generator-angular-fullstack
+#npm install npm@latest -g
+#npm install --global gulp-cli
+#npm install requirejs
+#npm install -g yo
+#npm install angular-ui-router
+#npm install angular@1.6.3
+#npm install d3
 source ~/.profile
 
 #LIBRERIAS DE PYTHON PARA EJECUCIÖN DE CODIGO STREAM
@@ -121,3 +128,4 @@ sudo mysql_secure_installation
 #RELOAD PRIVILEGE TABLES: YES
 
 ########################################################FIN PARTE MANUAL#####################################################################
+#CONFIGURACION DE NGINX: https://gist.github.com/soheilhy/8b94347ff8336d971ad0
