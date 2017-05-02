@@ -373,9 +373,9 @@ if __name__ == '__main__':
         # Connect/reconnect the stream
         	myStream = tweepy.Stream(auth=api.auth, listener=streamListener)
         # DON'T run this approach async or you'll just create a ton of streams!
-        	myStream.filter(track=get_words()) #podria ser util poner async=True
+        	myStream.filter(track=get_words())
     	except IncompleteRead:
-        # Oh well, reconnect and keep trucking
+        # Oh well, reconnect and keep tracking
         	global perdida
         	perdida = perdida + 1
         	continue
