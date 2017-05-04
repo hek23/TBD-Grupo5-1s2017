@@ -1,3 +1,4 @@
+#!/bin/bash
 cd ~
 sudo apt-get update
 sudo apt-get -y install git
@@ -10,6 +11,11 @@ sudo apt-get -y install oracle-java8-installer
 cd ~
 mkdir scripts
 touch ~/scripts/javadir.d
+if [ -f ~/.profile ]; then
+  echo "Profile exists!"
+else
+  cp /etc/skel/.profile ~/.profile
+fi
 cp ~/.profile ~/.profile_backup
 echo 'JAVA_HOME="/usr/lib/jvm/java-8-oracle/jre"'> ~/scripts/javadir.d
 cat ~/.profile_backup ~/scripts/javadir.d > ~/.profile
@@ -72,13 +78,13 @@ cat ~/.profile_backup ~/scripts/javadir.d > ~/.profile
 source ~/.profile
 sudo chown -R $USER /usr/local
 cd ~
-wget http://www-us.apache.org/dist/lucene/java/6.5.0/lucene-6.5.0.zip
-unzip lucene-6.5.0.zip
-rm lucene-6.5.0.zip
-cd ~/lucene-6.5.0/core
-mv lucene-core-6.5.0.jar /usr/local/glassfish4/glassfish/lib/lucene-core-6.5.0.jar
+wget http://www-us.apache.org/dist/lucene/java/6.5.1/lucene-6.5.1.zip
+unzip lucene-6.5.1.zip
+rm lucene-6.5.1.zip
+cd ~/lucene-6.5.1/core
+mv lucene-core-6.5.1.jar /usr/local/glassfish4/glassfish/lib/lucene-core-6.5.1.jar
 cd ~
-rm -rf lucene-6.5.0
+rm -rf lucene-6.5.1
 wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.41.zip
 unzip mysql-connector-java-5.1.41.zip
 rm ~/mysql-connector-java-5.1.41.zip
@@ -93,16 +99,15 @@ rm -rf ~/scripts
 source ~/.profile
 
 #SERVIDOR NGINX PARA REDIRECCION Y PUERTOS
-sudo apt-get update
-sudo apt-get install nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
 sudo ufw allow 'Nginx HTTP'
 sudo systemctl stop nginx
 sudo systemctl start nginx
 
 #INSTALACION DE CONECTOR MYSQL-PYTHON
 cd ~
-wget https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-cext_2.1.6-1ubuntu16.04_amd64.deb
-sudo dpkg -i mysql-connector-python-cext_2.1.6-1ubuntu16.04_amd64.deb
+sudo apt-get install -y python-mysqldb
 
 #LIBRERIAS PARA PROYECTO, NO ES NECESARIO INSTALAR DE INMEDIATO
 #SI NO QUE CUANDO SE TENGA LISTA LA APP O PROYECTO

@@ -1,11 +1,12 @@
+#!/bin/bash
 sudo apt-get autoremove -y mongo
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
 echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 sudo apt-get -y update
-sudo apt-get install -y mongodb-org
+sudo apt-get -y install mongodb-org
 #SERVIDOR NGINX PARA REDIRECCION Y PUERTOS
-sudo apt-get update
-sudo apt-get install -y nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
 sudo ufw allow 'Nginx HTTP'
 sudo systemctl stop nginx
 sudo systemctl start nginx
@@ -15,5 +16,4 @@ sudo pip install --upgrade pip
 pip install pymongo tweepy googlemaps
 #INSTALACION DE CONECTOR MYSQL-PYTHON
 cd ~
-wget https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-cext_2.1.6-1ubuntu16.04_amd64.deb
-sudo dpkg -i mysql-connector-python-cext_2.1.6-1ubuntu16.04_amd64.deb
+sudo apt-get -y install python-mysqldb
