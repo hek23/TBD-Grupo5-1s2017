@@ -40,7 +40,7 @@ Se debe estar vigilando, dado que solicitará datos como la contraseña de super
 * [Java]() -
 * [JavaScript]() -
 
-#Manejadores de librerías/dependencias utilizados
+## Manejadores de librerías/dependencias utilizados
 * [PIP]() - Manager para librerías de Python.
 * [Maven](https://maven.apache.org/) - Manejo de dependencias en JavaEE.
 * [NPM]() - Manejador de dependencias y modulos Angular.
@@ -51,7 +51,7 @@ Se debe estar vigilando, dado que solicitará datos como la contraseña de super
 * [Angular]() - Framework de JavaScript para frontend dinámico.
 * [D3]() - Generación de gráficos dinámicos.
 
-##API Utilizadas
+## API Utilizadas
 * [GoogleMapsAPI]() - Consultas geolocalizadas.
 * [TwitterAPI]() - Extractor de información (Tweets).
 
@@ -62,7 +62,7 @@ Se debe estar vigilando, dado que solicitará datos como la contraseña de super
 ## Bases de datos utilizadas
 * [MongoDB]() - Motor de base de datos no relacional.
 * [MySQL]() - Motor de base de datos relacional.
-#Automatización de procesos
+##Automatización de procesos
 * [Jenkins]() - Automatizador de tareas y deploy automático.
 
 ## Versiones
@@ -72,6 +72,8 @@ Las versiones públicas de scripts de instalación y aplicación se liberan util
 ## Autores
 
 * **Héctor Fuentealba** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+
+##Agradecimientos
 
 ## License
 
