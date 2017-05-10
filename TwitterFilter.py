@@ -20,17 +20,15 @@ sys.setdefaultencoding('utf8')
 time_start = datetime.datetime.now()
 #Tiempo al inicio de la aplicacion
 tiempo_inicio_serv = datetime.datetime.now()
-#Se abre la conexion Mongo
-client = MongoClient()
 #Se define el numero limite
-limite = 100
+#limite = 10
 #############################################################################
 #############################################################################
 ##FUNCIONES GLOBALES ########################################################
 #############################################################################
 def mongo_prod_insert(doc):
     #Se abre la conexion Mongo
-    global client
+    client = MongoClient()
     db = client.politica
     #Se procede con la inserción Solo si tiene locación.
     if (doc is None):
@@ -40,12 +38,11 @@ def mongo_prod_insert(doc):
         #Se retorna el id del documento insertado
         return 1
 def mongo_queue_load():
-    global limite
-    global client
+    client = MongoClient()
     db = client.cola
     #Se extraen limit documentos
     docs= []
-    queryResult= db.tweets.find().limit(limit=limite)
+    queryResult= db.tweets.find().limit(1)
     for documento in queryResult:
         #Se saca el documento, se añade a la lista y luego se elimina de mongo usando su id único
         #documento= db.tweets.find_one()
@@ -149,18 +146,10 @@ def twitterFilter(statusJSON):
         mongo_prod_insert(info_tweet)
         return 0
 
-def main():
-    global client
-    global limite
-    #El procedimiento se ejecuta mientras hayan documentos que procesar
-    while client.cola.tweets.count() >= limite:
-        documentos = mongo_queue_load()
-        for doc in documentos:
-            twitterFilter(doc)
-            print "ld"
-    if limite < client.cola.tweets.count():
-        limite = client.cola.tweets.count()
-    else:
-        limite = 100
 while True:
-    main()
+    client = MongoClient()
+    #El procedimiento se ejecuta mientras hayan documentos que procesar
+    print "Quedan ", client.cola.tweets.count(), "Documentos"
+    documentos = mongo_queue_load()
+    for doc in documentos:
+        twitterFilter(doc)

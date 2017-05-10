@@ -167,7 +167,7 @@ if __name__ == '__main__':
     auth.secure = True
     auth.set_access_token(access_token, access_token_secret)
 
-    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, retry_count=10, retry_delay=5, retry_errors=5)
+    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, retry_count=900, retry_delay=0, retry_errors=15,)
 
     streamListener = TwitterStreamListener()
 
