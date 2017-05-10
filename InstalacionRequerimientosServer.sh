@@ -100,10 +100,13 @@ source ~/.profile
 
 #SERVIDOR NGINX PARA REDIRECCION Y PUERTOS
 sudo apt-get -y update
-sudo apt-get -y install nginx   
+sudo apt-get -y install nginx
 sudo ufw allow 'Nginx HTTP'
 sudo systemctl stop nginx
 sudo systemctl start nginx
+
+#LIBRERIAS DE PYTHON PARA EJECUCIÖN DE CODIGO STREAM
+pip install pymongo tweepy googlemaps
 
 #INSTALACION DE CONECTOR MYSQL-PYTHON
 cd ~
@@ -121,8 +124,6 @@ sudo apt-get install -y python-mysqldb
 #npm install d3
 source ~/.profile
 
-#LIBRERIAS DE PYTHON PARA EJECUCIÖN DE CODIGO STREAM
-pip install pymongo tweepy googlemaps
 
 ###########################################################PARTE MANUAL#######################################################################
 
