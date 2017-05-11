@@ -78,12 +78,14 @@ def get_words():
     return words
 #Funcion para insertar un documento con MongoDB
 #Entrada: diccionario o documento con formato JSON
+
 def mongo_queue_insert(doc):
     #Se abre la conexion Mongo
     client = MongoClient()
     db = client.cola
     #Se procede con la inserción Solo si tiene locación.
     db.tweets.insert(doc)
+    return 0
     #Se retorna el id del documento insertado
 
 class TwitterStreamListener(tweepy.StreamListener):
@@ -167,7 +169,7 @@ if __name__ == '__main__':
     auth.secure = True
     auth.set_access_token(access_token, access_token_secret)
 
-    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, retry_count=900, retry_delay=0, retry_errors=15,)
+    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, retry_count=5, retry_delay=5, retry_errors=5)
 
     streamListener = TwitterStreamListener()
 
@@ -179,7 +181,7 @@ if __name__ == '__main__':
             # Connect/reconnect the stream
         	myStream = tweepy.Stream(auth=api.auth, listener=streamListener, parser=tweepy.parsers.JSONParser())
             # DON'T run this approach async or you'll just create a ton of streams!
-        	myStream.filter(track=get_words())
+        	myStream.filter(track=['Trump'])
     	except KeyboardInterrupt:
             # Or however you want to exit this loop
         	myStream.disconnect()
