@@ -61,7 +61,7 @@ def get_words():
     mysqldatabase = MySQLdb.connect(host="localhost",    # your host, usually localhost
                          user="root",         # your username
                          passwd="root",  # your password
-                         db="ww3")
+                         db="WW3App")
     #Se crea el cursor para obtener datos
     sqlcursor = mysqldatabase.cursor()
     #Se ejecuta la consulta para obtener las palabras clave
@@ -179,7 +179,7 @@ if __name__ == '__main__':
             # Connect/reconnect the stream
         	myStream = tweepy.Stream(auth=api.auth, listener=streamListener, parser=tweepy.parsers.JSONParser())
             # DON'T run this approach async or you'll just create a ton of streams!
-        	myStream.filter(track=['Trump'])
+        	myStream.filter(track=get_words())
     	except KeyboardInterrupt:
             # Or however you want to exit this loop
         	myStream.disconnect()
