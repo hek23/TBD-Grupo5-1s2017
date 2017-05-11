@@ -77,7 +77,7 @@ def twitterFilter(statusJSON):
     #Se agrega el contenido del tweet
     'text': str(statusJSON['text'].encode('ascii','ignore')),
     #Se agrega la fecha de publicación
-    'created_at': str(statusJSON['created_at']),
+    'created_at': None,
     #Se agrega el lenguaje del tweet
     'tweet_lang' : str(statusJSON['lang']),
     #Se agrega la información de usuario
@@ -142,6 +142,36 @@ def twitterFilter(statusJSON):
         while (len(statusJSON['entities']['hashtags']) > 0):
             tags.append(statusJSON['entities']['hashtags'].pop()['text'].encode('ascii','ignore'))
         info_tweet['hashtags'] = tags
+        #Ahora se transforma el formato de fecha a uno soportado por Python, eliminando datos innecesarios
+        #Dado que se conoce el patron DIASEM MES NUMDIA HORA UTC AÑO
+        #Se pasa a AÑO-MES-NUMDIA HORA
+        fecha_tweet = str(statusJSON['created_at']).split()
+        if(fecha_tweet[1] == "Jan"):
+            fecha_tweet[1] = "01"
+        elif (fecha_tweet[1] == "Feb"):
+            fecha_tweet[1] = "02"
+        elif (fecha_tweet[1] == "Mar"):
+            fecha_tweet[1] = "03"
+        elif (fecha_tweet[1] == "Abr"):
+            fecha_tweet[1] = "04"
+        elif (fecha_tweet[1] == "May"):
+            fecha_tweet[1] = "05"
+        elif (fecha_tweet[1] == "Jun"):
+            fecha_tweet[1] = "06"
+        elif (fecha_tweet[1] == "Jul"):
+            fecha_tweet[1] = "07"
+        elif (fecha_tweet[1] == "Ago"):
+            fecha_tweet[1] = "08"
+        elif (fecha_tweet[1] == "Sep"):
+            fecha_tweet[1] = "09"
+        elif (fecha_tweet[1] == "Oct"):
+            fecha_tweet[1] = "10"
+        elif (fecha_tweet[1]== "Nov"):
+            fecha_tweet[1] = "11"
+        else:
+            fecha_tweet[1] = "12"
+        fecha_tweet= fecha_tweet[5] + "-" + fecha_tweet[1] + "-" + fecha_tweet[2] + " " + fecha_tweet[3]
+        info_tweet['created_at'] = fecha_tweet
         #FALTA VER EL TEMA DE RESPONSE (Proyectado a futuro. NO ahora)
         mongo_prod_insert(info_tweet)
         return 0

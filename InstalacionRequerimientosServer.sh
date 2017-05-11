@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo dpkg-reconfigure dash
 cd ~
 sudo apt-get update
 sudo apt-get -y install git
