@@ -209,7 +209,8 @@ def twitterFilter(statusJSON):
     while (len(statusJSON['entities']['hashtags']) > 0):
         tags.append(statusJSON['entities']['hashtags'].pop()['text'].encode('ascii','ignore'))
     info_tweet['hashtags'] = tags
-    #FALTA VER EL TEMA DE RESPONSE (Proyectado a futuro. NO ahora)
+    if ('retweeted_status' in statusJSON):
+        info_tweet['original_id'] = statusJSON['retweeted_status']['id']
     mongo_prod_insert(info_tweet)
     return 0
 
