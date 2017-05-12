@@ -81,7 +81,7 @@ def get_words():
 
 def mongo_queue_insert(doc):
     #Se abre la conexion Mongo
-    client = MongoClient()
+    client = MongoClient('localhost', 27017)
     db = client.cola
     #Se procede con la inserción Solo si tiene locación.
     db.tweets.insert(doc)
@@ -94,6 +94,8 @@ class TwitterStreamListener(tweepy.StreamListener):
     """
 
     def on_status(self, status):
+        #Como puede haber una violacion de limite
+
         #Se inserta el tweet a la base de datos a encolar
         mongo_queue_insert(status._json)
         print "Se inserta doc id: ", status._json['id']
@@ -159,10 +161,10 @@ class TwitterStreamListener(tweepy.StreamListener):
 
 if __name__ == '__main__':
 
-    access_token = "851544787475935233-ZBPxkM1iPROt9chtHlPYPFc6fqdyJzW"
-    access_token_secret = "VRARmFtHfpUVoJVGry23FtXyGUHbPwV17F3ELtc4fTN4k"
-    consumer_key = "2gi9kROqvsSKXZ9LxXmLmPtYv"
-    consumer_secret = "HaXWNDzjfi7ighdvHoc8xcuobKHSIZmtz5VIbnZ4Zxs9l2ecSu"
+    access_token = "851544787475935233-akXNk9tHrRa5zg7WqVhA2rSeQUjPt8s"
+    access_token_secret = "xvZsXBwHJ62rJWExkiOkjW07yOWKD1O6JOEl1SqAS57sm"
+    consumer_key = "R4qtF2SdkSgKMKG7W7f3hC0o4"
+    consumer_secret = "F6ErlmhH8CADQExGdkNGQkHMI7DLsRfRjVU2V0q7e528Jw6U4G"
 
     # Authentication
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -181,7 +183,7 @@ if __name__ == '__main__':
             # Connect/reconnect the stream
         	myStream = tweepy.Stream(auth=api.auth, listener=streamListener, parser=tweepy.parsers.JSONParser())
             # DON'T run this approach async or you'll just create a ton of streams!
-        	myStream.filter(track=['Trump'])
+        	myStream.filter(track=get_words())
     	except KeyboardInterrupt:
             # Or however you want to exit this loop
         	myStream.disconnect()

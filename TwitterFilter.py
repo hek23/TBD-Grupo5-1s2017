@@ -10,16 +10,24 @@ import requests
 import time
 import httplib
 import json
+import googlemaps
+import MySQLdb
 #############################################################################
 #CARGA DE ELEMENTOS DE SISTEMA Y ENCODING
 reload(sys)
 sys.setdefaultencoding('utf8')
 #############################################################################
 #VARIABLES GLOBALES
-#Tiempo al inicio
+#Tiempo al inicio de consultas
 time_start = datetime.datetime.now()
-#Tiempo al inicio de la aplicacion
-tiempo_inicio_serv = datetime.datetime.now()
+#Tiempo al de ultima consulta a GMaps
+time_last_gmaps = None
+#Acceso a API de googleMaps
+gmaps = googlemaps.Client(key='AIzaSyCXqoIj7e-cqQkWBR-KpP_AIAf34sUWNs4')
+#Limite de consultas diarias para la API DE GOOGLE
+API_LIMIT = 3000
+#Consultas que quedan disponibles para realizarse durante el dia
+API_REMAINING = 3000
 #############################################################################
 #############################################################################
 ##FUNCIONES GLOBALES ########################################################
@@ -37,21 +45,67 @@ def mongo_prod_insert(doc):
         return 1
 
 def mongo_queue_load():
-    print "Cliente de carga"
-    client = MongoClient()
+    client = MongoClient('localhost', 27017)
     db = client.cola
-    print "Db de cola"
     #Se extraen limit documentos
-    docs= []
-    queryResult= db.tweets.find().limit(1)
-    print "query ok"
-    for documento in queryResult:
-        #Se saca el documento, se añade a la lista y luego se elimina de mongo usando su id único
-        #documento= db.tweets.find_one()
-        docs.append(documento)
-        print "doc añadido"
-        db.tweets.remove({"_id": documento['_id']})
-    return docs
+    queryResult= db.tweets.find_one()
+    #q2 = queryResult
+    #print json.dumps(q2)
+    #Se saca el documento, se añade a la lista y luego se elimina de mongo usando su id único
+    #documento= db.tweets.find_one()
+    db.tweets.remove({"_id": queryResult['_id']})
+    return queryResult
+def googlemapsask(localizacion):
+    global gmaps
+    global API_LIMIT
+    global API_REMAINING
+    global time_last_gmaps
+    if (API_REMAINING < 1):
+        #No se puede consultar a menos que sea otro dia.
+        if (datetime.datetime.now().day != time_last_gmaps.day):
+            API_REMAINING = API_LIMIT
+            googlemapsask(localizacion)
+        else:
+            return None
+    elif (localizacion == "" or localizacion is None):
+        return None
+    else:
+        #Se consulta por los lugares del usuario
+        geocode = gmaps.geocode(localizacion)
+        time_last_gmaps = datetime.datetime.now()
+        API_REMAINING = API_REMAINING - 1
+        if len(geocode)<1:
+            return None
+        else:
+            #Lat y long
+            coord =  (geocode[0]['geometry']['location']['lat'], geocode[0]['geometry']['location']['lng'])
+            #Code Country
+            country_code = geocode[0]['address_components'][len(geocode[0]['address_components'])-1]['short_name']
+            #Country full
+            db = MySQLdb.connect(host="localhost",    # your host, usually localhost
+                                 user="root",         # your username
+                                 passwd="root",  # your password
+                                 db="WW3App")        # name of the data base
+            sqlCursor = db.cursor()
+            query = "SELECT * FROM WW3App.Country WHERE Country.Code = " + "'" + country_code + "'";
+            sqlCursor.execute(query)
+            res = sqlCursor.fetchall()
+            if (len(res)>0):
+                country_name = res[0][0]
+                db.close()
+                place = {
+                    'country' : country_name,
+                    'country_code' : country_code,
+                    'name_place' : localizacion,
+                    'geo_center': {
+                        'latitude' : coord[0],
+                        'longitude': coord[1]
+                    }
+                    }
+                return place
+            else:
+                db.close()
+                return None
 
 #Funcion para calcular el punto central coordenado
 #Entrada: Lista de puntos del tipo [[LONG, LAT], [LONG, LAT]] de tamaño indeterminado
@@ -115,21 +169,21 @@ def twitterFilter(statusJSON):
         #Si el pais no es nulo, hay información
         if statusJSON['place']['country'] is not None:
             info_tweet['place']['country'] = statusJSON['place']['country'].encode('ascii','ignore')
-        else:
+        #else:
             #Si es nulo, no hay información y se descarta
-            return None
+            #return None
         #Si el código de país no es nulo, hay información
         if statusJSON['place']['country_code'] is not None:
             info_tweet['place']['country_code'] = statusJSON['place']['country_code'].encode('ascii','ignore')
-        else:
+        #else:
             #Si es nulo, se descarta el tweet
-            return None
+        #    return None
         #Si el nombre del lugar no es nulo, entonces se agrega.
         if statusJSON['place']['full_name'] is not None:
             info_tweet['place']['name_place'] = statusJSON['place']['full_name'].encode('ascii','ignore')
-        else:
+        #else:
             #Si es nulo, se descarta
-            return None
+        #    return None
         #Si el lugar tiene polígono (el cual define al lugar), se analiza
         if (('bounding_box' in statusJSON['place']) and ('coordinates' in statusJSON['place']['bounding_box'])):
             #Si el largo es mayor a 0, se busca el punto central del polígono
@@ -137,26 +191,33 @@ def twitterFilter(statusJSON):
                 center_point = get_center_point(statusJSON['place']['bounding_box']['coordinates'][0])
                 info_tweet['place']['geo_center']['latitude'] = center_point[0]
                 info_tweet['place']['geo_center']['longitude'] = center_point[1]
-            else:
+            #else:
                 #Si no, se descarta
-                return None
-        #Se agregan los hashtags...
-        tags = []
-        while (len(statusJSON['entities']['hashtags']) > 0):
-            tags.append(statusJSON['entities']['hashtags'].pop()['text'].encode('ascii','ignore'))
-        info_tweet['hashtags'] = tags
-        #FALTA VER EL TEMA DE RESPONSE (Proyectado a futuro. NO ahora)
-        print info_tweet
-        mongo_prod_insert(info_tweet)
-        return 0
+            #    return None
+
+    else:
+        #Si no hay info, se procede a buscarla.
+        print statusJSON['id']
+        lugar = googlemapsask(statusJSON['user']['location'])
+        #Si no se encuentra, entonces se deshecha
+        if lugar is None:
+            return None
+        else:
+            info_tweet['place'] = lugar
+    #Se agregan los hashtags...
+    tags = []
+    while (len(statusJSON['entities']['hashtags']) > 0):
+        tags.append(statusJSON['entities']['hashtags'].pop()['text'].encode('ascii','ignore'))
+    info_tweet['hashtags'] = tags
+    #FALTA VER EL TEMA DE RESPONSE (Proyectado a futuro. NO ahora)
+    mongo_prod_insert(info_tweet)
+    return 0
 
 while True:
-    client = MongoClient()
-    print "Se crea cliente"
+    client = MongoClient("mongodb://127.0.0.1:27017")
     #El procedimiento se ejecuta mientras hayan documentos que procesar
-    #print "Quedan ", client.cola.tweets.count(), "Documentos"
-    print "Intento de carga"
-    documentos = mongo_queue_load()
-    print "Carga lista"
-    for doc in documentos:
-        twitterFilter(doc)
+    #"
+    while (client.cola.tweets.count() > 0):
+        documento = mongo_queue_load()
+        twitterFilter(documento)
+        print "Quedan ", client.cola.tweets.count(), "Documentos"
