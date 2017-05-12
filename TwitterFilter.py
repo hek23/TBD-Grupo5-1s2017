@@ -1,4 +1,6 @@
 #*-*coding: utf-8*-*
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from datetime import datetime
 import datetime
@@ -25,9 +27,9 @@ time_last_gmaps = None
 #Acceso a API de googleMaps
 gmaps = googlemaps.Client(key='')
 #Limite de consultas diarias para la API DE GOOGLE
-API_LIMIT = 3000
+API_LIMIT = 2200
 #Consultas que quedan disponibles para realizarse durante el dia
-API_REMAINING = 3000
+API_REMAINING = 2200
 #############################################################################
 #############################################################################
 ##FUNCIONES GLOBALES ########################################################
@@ -71,41 +73,45 @@ def googlemapsask(localizacion):
         return None
     else:
         #Se consulta por los lugares del usuario
-        geocode = gmaps.geocode(localizacion)
-        time_last_gmaps = datetime.datetime.now()
-        API_REMAINING = API_REMAINING - 1
-        if len(geocode)<1:
-            return None
-        else:
-            #Lat y long
-            coord =  (geocode[0]['geometry']['location']['lat'], geocode[0]['geometry']['location']['lng'])
-            #Code Country
-            country_code = geocode[0]['address_components'][len(geocode[0]['address_components'])-1]['short_name']
-            #Country full
-            db = MySQLdb.connect(host="localhost",    # your host, usually localhost
-                                 user="root",         # your username
-                                 passwd="root",  # your password
-                                 db="WW3App")        # name of the data base
-            sqlCursor = db.cursor()
-            query = "SELECT * FROM WW3App.Country WHERE Country.Code = " + "'" + country_code + "'";
-            sqlCursor.execute(query)
-            res = sqlCursor.fetchall()
-            if (len(res)>0):
-                country_name = res[0][0]
-                db.close()
-                place = {
-                    'country' : country_name,
-                    'country_code' : country_code,
-                    'name_place' : localizacion,
-                    'geo_center': {
-                        'latitude' : coord[0],
-                        'longitude': coord[1]
-                    }
-                    }
-                return place
-            else:
-                db.close()
+        try:
+            geocode = gmaps.geocode(localizacion.encode('utf-8'))
+            time_last_gmaps = datetime.datetime.now()
+            API_REMAINING = API_REMAINING - 1
+            if len(geocode)<1:
                 return None
+            else:
+                #Lat y long
+                coord =  (geocode[0]['geometry']['location']['lat'], geocode[0]['geometry']['location']['lng'])
+                #Code Country
+                country_code = geocode[0]['address_components'][len(geocode[0]['address_components'])-1]['short_name']
+                #Country full
+                db = MySQLdb.connect(host="localhost",    # your host, usually localhost
+                                     user="root",         # your username
+                                     passwd="root",  # your password
+                                     db="WW3App")        # name of the data base
+                sqlCursor = db.cursor()
+                query = "SELECT * FROM WW3App.Country WHERE Country.Code = " + "'" + country_code + "'";
+                sqlCursor.execute(query)
+                res = sqlCursor.fetchall()
+                if (len(res)>0):
+                    country_name = res[0][0]
+                    db.close()
+                    place = {
+                        'country' : country_name,
+                        'country_code' : country_code,
+                        'name_place' : localizacion,
+                        'geo_center': {
+                            'latitude' : coord[0],
+                            'longitude': coord[1]
+                        }
+                        }
+                    return place
+                else:
+                    db.close()
+                    return None
+        except:
+            return None
+
 
 #Funcion para calcular el punto central coordenado
 #Entrada: Lista de puntos del tipo [[LONG, LAT], [LONG, LAT]] de tamaño indeterminado

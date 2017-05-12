@@ -14,7 +14,3 @@ body {
   transition: 1000ms ease; }
   .logo:hover {
     transform: rotate(360deg); }
-
-input {
-    color: blue;
-}
