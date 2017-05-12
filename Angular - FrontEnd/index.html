@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Migrations</title>
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="./styles/main.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
+    </head>
+<body ng-app="angularSpa">
+<nav class="navbar navbar-default">
+  <ul class="nav navbar-nav navbar-right">
+    <li><a href="#/home">Inicio</a></li>
+    <li><a href="#/about">Acerca de</a></li>
+    <li><a href="#/actors">Listado</a></li>
+    <li><a href="#/add">Agregar</a></li>
+
+  </ul>
+</nav>
+<div class="container">
+    <img class="logo" src="img/angular.png" alt="logo">
+    <h1>Angular SPA</h1>
+    <div ng-view=""></div>
+</div>
+
+    
+    <canvas id="myLineChart" width="400" height="400"></canvas> 
+
+    <canvas id="myPieChart" width="400" height="400"></canvas> 
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"   integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc="   crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-route.min.js"></script>
+<script src="js/app.js"></script>
+<script src="js/controllers/mainCtrl.js"></script>
+<script src="js/controllers/aboutCtrl.js"></script>
+<script src="js/controllers/actorsSrv.js"></script>
+<script src="js/controllers/actorsCtrl.js"></script>
+<script src="js/controllers/addCtrl.js"></script>
+<script src="js/controllers/graficolineal.js"></script>
+<script src="js/controllers/graficotorta.js"></script>
+
+</body>
+</html>

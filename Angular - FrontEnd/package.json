@@ -1,0 +1,27 @@
+{
+  "name": "simple-angular-template",
+  "version": "1.0.0",
+  "description": "Taller de BD",
+  "main": "index.js",
+  "scripts": {
+    "build-css": "node-sass --include-path scss ./styles/main.scss   ./styles/main.css",
+    "watch-css": "nodemon -e scss -x \"npm run build-css\"",
+    "dev": "concurrently --kill-others 'npm run watch-css' 'autoreload-server ./ 8090'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dfao/tbd-angular-2-2016.git"
+  },
+  "author": "dfao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dfao/tbd-angular-2-2016/issues"
+  },
+  "homepage": "https://github.com/dfao/tbd-angular-2-2016#readme",
+  "devDependencies": {
+    "concurrently": "^3.0.0",
+    "node-sass": "^3.10.0",
+    "nodemon": "^1.10.2",
+    "simple-autoreload-server": "^0.1.7"
+  }
+}
