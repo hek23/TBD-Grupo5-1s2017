@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `WW3App` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE  IF NOT EXISTS `WW3App` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `WW3App`;
 -- MySQL dump 10.13  Distrib 5.7.18, for Linux (x86_64)
 --
--- Host: localhost    Database: testCry
+-- Host: localhost    Database: WW3App
 -- ------------------------------------------------------
 -- Server version	5.7.18-0ubuntu0.16.04.1
 
@@ -56,7 +56,7 @@ CREATE TABLE `CountryStat` (
   `RetweetsCount` varchar(45) NOT NULL,
   `ResponsesCount` varchar(45) NOT NULL,
   `Country` int(11) NOT NULL,
-  `Stat` int(11) DEFAULT NULL,
+  `Date` date DEFAULT NULL,
   PRIMARY KEY (`idTweetsCount`),
   KEY `fk_CountryStat_Country_idx` (`Country`),
   CONSTRAINT `fk_CountryStat_Country` FOREIGN KEY (`Country`) REFERENCES `Country` (`idCountry`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -101,6 +101,21 @@ INSERT INTO `Keyword` VALUES (1,'Trump',1),(2,'Bashar',1),(3,'Al-Assad',1),(4,'I
 UNLOCK TABLES;
 
 --
+-- Temporary table structure for view `Stats`
+--
+
+DROP TABLE IF EXISTS `Stats`;
+/*!50001 DROP VIEW IF EXISTS `Stats`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `Stats` AS SELECT 
+ 1 AS `Name`,
+ 1 AS `Code`,
+ 1 AS `SUM(CountryStat.RetweetsCount)`,
+ 1 AS `SUM(CountryStat.ResponsesCount)`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `User`
 --
 
@@ -127,6 +142,24 @@ LOCK TABLES `User` WRITE;
 INSERT INTO `User` VALUES (1,'hek23','1234','Admin'),(2,'camus','camus','Admin'),(3,'daguilar','daguilar','Admin'),(4,'jcabello','jcabello','Admin');
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Final view structure for view `Stats`
+--
+
+/*!50001 DROP VIEW IF EXISTS `Stats`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `Stats` AS select `Country`.`Name` AS `Name`,`Country`.`Code` AS `Code`,sum(`CountryStat`.`RetweetsCount`) AS `SUM(CountryStat.RetweetsCount)`,sum(`CountryStat`.`ResponsesCount`) AS `SUM(CountryStat.ResponsesCount)` from (`CountryStat` join `Country` on((`Country`.`idCountry` = `CountryStat`.`Country`))) group by `CountryStat`.`Country` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -137,4 +170,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-10 22:21:12
+-- Dump completed on 2017-05-12  9:29:31
