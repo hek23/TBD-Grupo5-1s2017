@@ -23,7 +23,7 @@ time_start = datetime.datetime.now()
 #Tiempo al de ultima consulta a GMaps
 time_last_gmaps = None
 #Acceso a API de googleMaps
-gmaps = googlemaps.Client(key='AIzaSyCXqoIj7e-cqQkWBR-KpP_AIAf34sUWNs4')
+gmaps = googlemaps.Client(key='')
 #Limite de consultas diarias para la API DE GOOGLE
 API_LIMIT = 3000
 #Consultas que quedan disponibles para realizarse durante el dia
