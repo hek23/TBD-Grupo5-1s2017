@@ -45,6 +45,20 @@ INSERT INTO `Country` VALUES ('Andorra','Europe',78000,'AD',1),('United Arab Emi
 UNLOCK TABLES;
 
 --
+-- Temporary table structure for view `CountryResume`
+--
+
+DROP TABLE IF EXISTS `CountryResume`;
+/*!50001 DROP VIEW IF EXISTS `CountryResume`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `CountryResume` AS SELECT 
+ 1 AS `Name`,
+ 1 AS `SUM(CountryStat.TweetsCount)`,
+ 1 AS `SUM(CountryStat.ReTweetsCount)`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `CountryStat`
 --
 
@@ -104,6 +118,20 @@ INSERT INTO `Keyword` VALUES (1,'Trump',1),(2,'Bashar',1),(3,'Al-Assad',1),(4,'I
 UNLOCK TABLES;
 
 --
+-- Temporary table structure for view `KeywordResume`
+--
+
+DROP TABLE IF EXISTS `KeywordResume`;
+/*!50001 DROP VIEW IF EXISTS `KeywordResume`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `KeywordResume` AS SELECT 
+ 1 AS `word`,
+ 1 AS `SUM(CountryStat.TweetsCount)`,
+ 1 AS `SUM(CountryStat.ReTweetsCount)`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `User`
 --
 
@@ -130,6 +158,42 @@ LOCK TABLES `User` WRITE;
 INSERT INTO `User` VALUES (1,'hek23','1234','Admin'),(2,'camus','camus','Admin'),(3,'daguilar','daguilar','Admin'),(4,'jcabello','jcabello','Admin');
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Final view structure for view `CountryResume`
+--
+
+/*!50001 DROP VIEW IF EXISTS `CountryResume`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `CountryResume` AS select `Country`.`Name` AS `Name`,sum(`CountryStat`.`TweetsCount`) AS `SUM(CountryStat.TweetsCount)`,sum(`CountryStat`.`RetweetsCount`) AS `SUM(CountryStat.ReTweetsCount)` from (`CountryStat` join `Country` on((`CountryStat`.`Country` = `Country`.`idCountry`))) group by `CountryStat`.`Country` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `KeywordResume`
+--
+
+/*!50001 DROP VIEW IF EXISTS `KeywordResume`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `KeywordResume` AS select `Keyword`.`word` AS `word`,sum(`CountryStat`.`TweetsCount`) AS `SUM(CountryStat.TweetsCount)`,sum(`CountryStat`.`RetweetsCount`) AS `SUM(CountryStat.ReTweetsCount)` from (`CountryStat` join `Keyword` on((`CountryStat`.`Keyword` = `Keyword`.`idKeyword`))) group by `CountryStat`.`Keyword` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -140,4 +204,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-12 11:29:46
+-- Dump completed on 2017-05-13 19:44:01

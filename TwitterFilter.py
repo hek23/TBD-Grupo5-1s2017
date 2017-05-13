@@ -1,4 +1,3 @@
-#*-*coding: utf-8*-*
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
@@ -25,7 +24,7 @@ time_start = datetime.datetime.now()
 #Tiempo al de ultima consulta a GMaps
 time_last_gmaps = None
 #Acceso a API de googleMaps
-gmaps = googlemaps.Client(key='')
+gmaps = googlemaps.Client(key='AIzaSyCXqoIj7e-cqQkWBR-KpP_AIAf34sUWNs4')
 #Limite de consultas diarias para la API DE GOOGLE
 API_LIMIT = 2200
 #Consultas que quedan disponibles para realizarse durante el dia
@@ -51,10 +50,7 @@ def mongo_queue_load():
     db = client.cola
     #Se extraen limit documentos
     queryResult= db.tweets.find_one()
-    #q2 = queryResult
-    #print json.dumps(q2)
     #Se saca el documento, se añade a la lista y luego se elimina de mongo usando su id único
-    #documento= db.tweets.find_one()
     db.tweets.remove({"_id": queryResult['_id']})
     return queryResult
 def googlemapsask(localizacion):
@@ -69,7 +65,7 @@ def googlemapsask(localizacion):
             googlemapsask(localizacion)
         else:
             return None
-    elif (localizacion == "" or localizacion is None):
+    elif ((localizacion is None) or not(localizacion.isalpha())):
         return None
     else:
         #Se consulta por los lugares del usuario
@@ -81,7 +77,7 @@ def googlemapsask(localizacion):
                 return None
             else:
                 #Lat y long
-                coord =  (geocode[0]['geometry']['location']['lat'], geocode[0]['geometry']['location']['lng'])
+                coord = (geocode[0]['geometry']['location']['lat'], geocode[0]['geometry']['location']['lng'])
                 #Code Country
                 country_code = geocode[0]['address_components'][len(geocode[0]['address_components'])-1]['short_name']
                 #Country full
@@ -160,8 +156,11 @@ def twitterFilter(statusJSON):
             'longitude': 0
         }
     },
-    #Si es retweet o respuesta, se agrega el id del original o anterior
-    'original_id': "None",
+    #Si es retweet o respuesta, se agrega el id del original o anterior y el pais de origen del mismo
+    'rt':{
+        'original_id': "None",
+        'origin_country': "None"
+    },
     #Se agregan los hashtags que posee el tweet
     'hashtags': []
     #Se indica el tipo de referencia (?)
@@ -216,7 +215,9 @@ def twitterFilter(statusJSON):
         tags.append(statusJSON['entities']['hashtags'].pop()['text'].encode('ascii','ignore'))
     info_tweet['hashtags'] = tags
     if ('retweeted_status' in statusJSON):
-        info_tweet['original_id'] = statusJSON['retweeted_status']['id']
+        info_tweet['rt']['original_id'] = statusJSON['retweeted_status']['id']
+        #Se revisa la ubicación del retweet
+        info_tweet['rt']['origin_country'] = googlemapsask(statusJSON['retweeted_status']['user']['location'])['country']
     mongo_prod_insert(info_tweet)
     return 0
 

@@ -73,7 +73,7 @@ def get_words():
     words=[]
     #Para cada palabra obtenida, se trata y agrega.
     for palabra in wordsSQL:
-        words.append(str(palabra))
+        words.append(str(palabra[0]))
     #Se retorna la lista de palabras
     return words
 #Funcion para insertar un documento con MongoDB
@@ -95,7 +95,6 @@ class TwitterStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         #Como puede haber una violacion de limite
-
         #Se inserta el tweet a la base de datos a encolar
         mongo_queue_insert(status._json)
         print "Se inserta doc id: ", status._json['id']
