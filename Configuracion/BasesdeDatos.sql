@@ -52,7 +52,7 @@ DROP TABLE IF EXISTS `CountryResume`;
 /*!50001 DROP VIEW IF EXISTS `CountryResume`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE VIEW `CountryResume` AS SELECT 
+/*!50001 CREATE VIEW `CountryResume` AS SELECT
  1 AS `Name`,
  1 AS `SUM(CountryStat.TweetsCount)`,
  1 AS `SUM(CountryStat.ReTweetsCount)`*/;
@@ -125,7 +125,7 @@ DROP TABLE IF EXISTS `KeywordResume`;
 /*!50001 DROP VIEW IF EXISTS `KeywordResume`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE VIEW `KeywordResume` AS SELECT 
+/*!50001 CREATE VIEW `KeywordResume` AS SELECT
  1 AS `word`,
  1 AS `SUM(CountryStat.TweetsCount)`,
  1 AS `SUM(CountryStat.ReTweetsCount)`*/;

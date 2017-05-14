@@ -35,7 +35,8 @@ API_REMAINING = 2200
 #############################################################################
 def mongo_prod_insert(doc):
     #Se abre la conexion Mongo
-    client = MongoClient()
+    #client = MongoClient()
+    global client
     db = client.politica
     #Se procede con la inserción Solo si tiene locación.
     if (doc is None):
@@ -46,7 +47,8 @@ def mongo_prod_insert(doc):
         return 1
 
 def mongo_queue_load():
-    client = MongoClient('localhost', 27017)
+    global client
+    #client = MongoClient('localhost', 27017)
     db = client.cola
     #Se extraen limit documentos
     queryResult= db.tweets.find_one()
@@ -65,7 +67,11 @@ def googlemapsask(localizacion):
             googlemapsask(localizacion)
         else:
             return None
-    elif ((localizacion is None) or not(localizacion.isalpha())):
+    elif (localizacion is None):
+        return None
+    elif (not localizacion.isalpha()):
+        return None
+    elif (localizacion == ""):
         return None
     else:
         #Se consulta por los lugares del usuario
@@ -159,7 +165,8 @@ def twitterFilter(statusJSON):
     #Si es retweet o respuesta, se agrega el id del original o anterior y el pais de origen del mismo
     'rt':{
         'original_id': "None",
-        'origin_country': "None"
+        'origin_country': "None",
+        'origin_countryCode': "None"
     },
     #Se agregan los hashtags que posee el tweet
     'hashtags': []
@@ -214,18 +221,29 @@ def twitterFilter(statusJSON):
     while (len(statusJSON['entities']['hashtags']) > 0):
         tags.append(statusJSON['entities']['hashtags'].pop()['text'].encode('ascii','ignore'))
     info_tweet['hashtags'] = tags
-    if ('retweeted_status' in statusJSON):
+    if ('retweeted_status' in statusJSON) and ('user' in statusJSON['retweeted_status']) and ('location' in statusJSON['retweeted_status']['user']):
         info_tweet['rt']['original_id'] = statusJSON['retweeted_status']['id']
         #Se revisa la ubicación del retweet
-        info_tweet['rt']['origin_country'] = googlemapsask(statusJSON['retweeted_status']['user']['location'])['country']
+        location = googlemapsask(statusJSON['retweeted_status']['user']['location'])
+        print location
+        #codert = googlemapsask(statusJSON['retweeted_status']['user']['location'])['country_code']
+        if (location is None):
+            return None
+        else:
+            info_tweet['rt']['origin_country'] = location['country']
+            info_tweet['rt']['origin_countryCode'] = location['country_code']
     mongo_prod_insert(info_tweet)
     return 0
 
+client = MongoClient("mongodb://127.0.0.1:27017")
 while True:
-    client = MongoClient("mongodb://127.0.0.1:27017")
     #El procedimiento se ejecuta mientras hayan documentos que procesar
     #"
-    while (client.cola.tweets.count() > 0):
-        documento = mongo_queue_load()
-        twitterFilter(documento)
-        print "Quedan ", client.cola.tweets.count(), "Documentos"
+    try:
+        while (client.cola.tweets.count() > 0):
+            documento = mongo_queue_load()
+            twitterFilter(documento)
+            print "Quedan ", client.cola.tweets.count(), "Documentos"
+        time.sleep(15*60)
+    except pymongo.errors.AutoReconnect:
+        print "intentando reconectar"
