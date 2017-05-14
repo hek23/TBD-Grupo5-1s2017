@@ -1,13 +1,21 @@
 <!DOCTYPE html>
-<html>
-    <head>
+<html ng-app="datosApp">
+        <head>
         <meta charset="utf-8">
-        <title>Migrations</title>
+        <title>Angular JS</title>
+        
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        
         <link rel="stylesheet" type="text/css" href="./styles/main.css">
+        
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    
+        <script type="text/javascript" src="angular.min.js"></script>
+
     </head>
-<body ng-app="angularSpa">
+<body>
 <nav class="navbar navbar-default">
   <ul class="nav navbar-nav navbar-right">
     <li><a href="#/home">Inicio</a></li>
@@ -23,10 +31,153 @@
     <div ng-view=""></div>
 </div>
 
-    
-    <canvas id="myLineChart" width="400" height="400"></canvas> 
 
-    <canvas id="myPieChart" width="400" height="400"></canvas> 
+<!--Mediante el servicio HTTP y el método GET, se obtienen los datos del JSON (en teoría se almacenan en la variable creada con el $scope (informaciónLineal))-->
+
+<script type="text/javascript">
+var misDatos = angular.module('datosApp', []);
+misDatos.controller('controladorDatos',function($scope,$http){
+        $scope.importar = function(){
+            $http.get('datosLineal.json').success(function(datos){
+                $scope.informacionLineal = datos; 
+            });
+        }
+        $scope.importar();
+});
+</script>
+
+
+<!--Se utiliza ng-repeat para recorrer la variable informaiconLineal que contiene los datos del JSON y se muestran en la pagina web las fechas-->
+<div ng-controller="controladorDatos">
+    <ul>
+        <li ng-repeat="seccion in informacionLineal.info">
+            <td>
+                {{seccion.fechas}}
+            </td>     
+    </ul>
+</div>
+
+<!--Se determinan los parámetros utilizados para graficar, se explica en la documentación de Chart que no es considerado MALA PRACTICA mantener el código en el index.html, esto lo decidí puesto que es más fácil y directo acceder a parámetros dentro del mismo archivo-->
+
+<!--Código de Gráfico de lineas con ejemplos de entrada-->
+<!--en "etiquetas" se deberían obtener las fechas EN UN ARREGLO que ŕepresentan el EJE X del gráfico, actualmente solo se agrega "Ej"-->
+<!--En "topicos" se deberían obtener las palabras claves EN UN ARREGLO que representan las líneas que existirán en el gráfico-->
+<!--En "menciones" se deberían obtener la cantidad de menciones EN UN ARREGLO-->
+<!--Estas tres variables pasan como parámetro a la data del gráfico-->
+<!--Se puede notar que solo falta tomar los datos del JSON y guardarlos en los arreglos para terminar-->
+<canvas id="myLineChart"></canvas>
+    
+<script>
+var canvas = document.getElementById("myLineChart");
+var ctx = canvas.getContext('2d');
+Chart.defaults.global.defaultFontColor = 'black';
+Chart.defaults.global.defaultFontSize = 16;
+
+
+var etiquetas = [];
+var largo = 9;
+for (i = 0; i < largo; i++) 
+{
+    etiquetas[i]= 'Ej'; 
+}
+
+var topicos = [];
+topicos[0]="Trump";
+topicos[1]="Siria";
+       
+var mencionesT1 = [];
+mencionesT1[0] = 453;
+mencionesT1[1] = 357;
+mencionesT1[2] = 241;
+mencionesT1[3] = 100;
+mencionesT1[4] = 321;
+mencionesT1[5] = 576;
+mencionesT1[6] = 1200;
+mencionesT1[7] = 587;
+mencionesT1[8] = 811;
+        
+
+var mencionesT2 = [];
+mencionesT2[0] = 500;
+mencionesT2[1] = 3324;
+mencionesT2[2] = 221;
+mencionesT2[3] = 1120;
+mencionesT2[4] = 32;
+mencionesT2[5] = 315;
+mencionesT2[6] = 700;
+mencionesT2[7] = 512;
+mencionesT2[8] = 1000;
+
+var data = {
+  labels: etiquetas,
+  datasets: [{
+      label: topicos[0],
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: "rgba(225,0,0,0.4)",
+      borderColor: "red", // The main line color
+      borderCapStyle: 'square',
+      borderDash: [], // try [5, 15] for instance
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: "black",
+      pointBackgroundColor: "white",
+      pointBorderWidth: 1,
+      pointHoverRadius: 8,
+      pointHoverBackgroundColor: "yellow",
+      pointHoverBorderColor: "brown",
+      pointHoverBorderWidth: 2,
+      pointRadius: 4,
+      pointHitRadius: 10,
+      // notice the gap in the data and the spanGaps: true
+      data: mencionesT1,
+      spanGaps: true,
+    }, {
+      label: topicos[1],
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: "rgba(167,105,0,0.4)",
+      borderColor: "rgb(167, 105, 0)",
+      borderCapStyle: 'butt',
+      borderDashOffset: 0.0,
+      pointBorderColor: "white",
+      pointBackgroundColor: "black",
+      pointBorderWidth: 1,
+      pointHoverRadius: 8,
+      pointHoverBorderWidth: 2,
+      pointRadius: 4,
+      pointHitRadius: 10,
+      data: mencionesT2,
+      spanGaps: true,
+    }
+  ]
+};
+
+// Notice the scaleLabel at the same level as Ticks
+var options = {
+  scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                },
+                scaleLabel: {
+                     display: true,
+                     labelString: 'Moola',
+                     fontSize: 20 
+                  }
+            }]            
+        }  
+};
+
+// Chart declaration:
+var myLineChart = new Chart(ctx, {
+  type: 'line',
+  data: data,
+  options: options
+});
+
+</script>
+
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"   integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc="   crossorigin="anonymous"></script>
@@ -39,8 +190,6 @@
 <script src="js/controllers/actorsSrv.js"></script>
 <script src="js/controllers/actorsCtrl.js"></script>
 <script src="js/controllers/addCtrl.js"></script>
-<script src="js/controllers/graficolineal.js"></script>
-<script src="js/controllers/graficotorta.js"></script>
 
 </body>
 </html>
