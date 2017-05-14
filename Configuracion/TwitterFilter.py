@@ -209,7 +209,7 @@ def twitterFilter(statusJSON):
 
     else:
         #Si no hay info, se procede a buscarla.
-        print statusJSON['id']
+
         lugar = googlemapsask(statusJSON['user']['location'])
         #Si no se encuentra, entonces se deshecha
         if lugar is None:
@@ -225,7 +225,6 @@ def twitterFilter(statusJSON):
         info_tweet['rt']['original_id'] = statusJSON['retweeted_status']['id']
         #Se revisa la ubicación del retweet
         location = googlemapsask(statusJSON['retweeted_status']['user']['location'])
-        print location
         #codert = googlemapsask(statusJSON['retweeted_status']['user']['location'])['country_code']
         if (location is None):
             return None
@@ -244,6 +243,6 @@ while True:
             documento = mongo_queue_load()
             twitterFilter(documento)
             print "Quedan ", client.cola.tweets.count(), "Documentos"
-        time.sleep(15*60)
+        time.sleep(60)
     except pymongo.errors.AutoReconnect:
         print "intentando reconectar"

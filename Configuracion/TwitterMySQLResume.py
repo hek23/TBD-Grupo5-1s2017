@@ -30,16 +30,20 @@ def mongoCountRetweetPerCountry(countryCode):
 
 def mongoCountTweetConceptCountry(countryCode, concept):
     client = MongoClient('localhost', 27017)
+    #Se extraen y cuentan los tweets (no retweets) que hablan de un concepto y son de un pais determinado
     db = client.politica
-    print concept
-    print type(concept)
-    count = db.tweets.count({"$and": [{"text": {"$regex" : concept}}, {"place.country_code" : countryCode}]})
+    count = db.tweets.count({"$and": [{"place.country_code" : str(countryCode)}, {"rt.original_id": "None"}, {"text":{"$regex": str(concept)}}]})
     return count
 
 def mongoCountRetweetConceptCountry(countryCode, concept):
     client = MongoClient('localhost', 27017)
     db = client.politica
-    count = db.tweets.count({"$and": [{"text": {"$regex" : concept}}, {"place.country_code" : countryCode}, {"rt.original_id": {"$ne":"None"}}]})
+    count = 0
+    retweets = db.tweets.find({"$and": [{"place.country_code" : str(countryCode)}, {"rt.original_id": {"$ne":"None"}}]})
+    #Se debe ver si el tweet original habla del concepto
+    for retweet in retweets:
+        if getOriginalTweet(retweet['tweet_id'], concept):
+            count = count + 1
     return count
 
 def mongoCountRetweetFromTo(originCode, destinyCode):
@@ -50,6 +54,7 @@ def mongoCountRetweetFromTo(originCode, destinyCode):
     return count
 
 def mongoCountRetweetFromToConcept(originCode, destinyCode, concept):
+    #CORREGIR
     client = MongoClient('localhost', 27017)
     db = client.politica
     count = db.tweets.count({"$and":[{"place.country_code": destinyCode}, {"rt.original_id": {"$ne":"None"}}, {"rt.origin_countryCode": origin}, {"text": {"$regex" : concept}}]})
@@ -128,5 +133,23 @@ def makeInfluenceResume():
     #Pendiente
     return 0
 
+def getOriginalTweet(tweetid, concept):
+    global client
+    db = client.politica
+    tdb = db.tweets.find_one({"tweet_id": tweetid})
+    if tdb is None:
+        #implica que no está el tweet original
+        return False
+    elif ((tdb['text']).find(concept) != -1):
+        return True
+    elif not(str(tdb['rt']['original_id']) is None):
+        return getOriginalTweet(tdb['rt']['original_id'], concept)
+    else:
+        tweet = db.tweets.find({"$and": [ {"text" : {"$regex" : concept}}, {"tweet_id" : tweetid}]})
+        if tweet[0] is not None:
+            return True
+        else:
+            return False
 
+client = MongoClient('localhost', 27017)
 makeCountResume()
