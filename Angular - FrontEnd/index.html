@@ -3,15 +3,15 @@
         <head>
         <meta charset="utf-8">
         <title>Angular JS</title>
-        
+
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        
+
         <link rel="stylesheet" type="text/css" href="./styles/main.css">
-        
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
 
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
-    
+
         <script type="text/javascript" src="angular.min.js"></script>
 
     </head>
@@ -39,7 +39,7 @@ var misDatos = angular.module('datosApp', []);
 misDatos.controller('controladorDatos',function($scope,$http){
         $scope.importar = function(){
             $http.get('datosLineal.json').success(function(datos){
-                $scope.informacionLineal = datos; 
+                $scope.informacionLineal = datos;
             });
         }
         $scope.importar();
@@ -53,7 +53,7 @@ misDatos.controller('controladorDatos',function($scope,$http){
         <li ng-repeat="seccion in informacionLineal.info">
             <td>
                 {{seccion.fechas}}
-            </td>     
+            </td>
     </ul>
 </div>
 
@@ -66,7 +66,7 @@ misDatos.controller('controladorDatos',function($scope,$http){
 <!--Estas tres variables pasan como parámetro a la data del gráfico-->
 <!--Se puede notar que solo falta tomar los datos del JSON y guardarlos en los arreglos para terminar-->
 <canvas id="myLineChart"></canvas>
-    
+
 <script>
 var canvas = document.getElementById("myLineChart");
 var ctx = canvas.getContext('2d');
@@ -76,15 +76,15 @@ Chart.defaults.global.defaultFontSize = 16;
 
 var etiquetas = [];
 var largo = 9;
-for (i = 0; i < largo; i++) 
+for (i = 0; i < largo; i++)
 {
-    etiquetas[i]= 'Ej'; 
+    etiquetas[i]= 'Ej';
 }
 
 var topicos = [];
 topicos[0]="Trump";
 topicos[1]="Siria";
-       
+
 var mencionesT1 = [];
 mencionesT1[0] = 453;
 mencionesT1[1] = 357;
@@ -95,7 +95,7 @@ mencionesT1[5] = 576;
 mencionesT1[6] = 1200;
 mencionesT1[7] = 587;
 mencionesT1[8] = 811;
-        
+
 
 var mencionesT2 = [];
 mencionesT2[0] = 500;
@@ -163,10 +163,10 @@ var options = {
                 scaleLabel: {
                      display: true,
                      labelString: 'Moola',
-                     fontSize: 20 
+                     fontSize: 20
                   }
-            }]            
-        }  
+            }]
+        }
 };
 
 // Chart declaration:

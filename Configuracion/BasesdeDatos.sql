@@ -204,4 +204,11 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-13 19:44:01
+USE `WW3App`;
+DELIMITER $$
+CREATE TRIGGER `fecha` BEFORE INSERT ON `CountryStat` FOR EACH ROW
+if ( isnull(new.Date) ) then
+ set new.Date=curdate();
+end if;
+$$
+delimiter ;

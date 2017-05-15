@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="CountryPU" transaction-type="JTA">
+		<jta-data-source>jdbc/CountryJDBC</jta-data-source>
+		<class>tk.ww3app.model.Country</class>
+	</persistence-unit>
+	<persistence-unit name="CountryResumePU" transaction-type="JTA">
+		<jta-data-source>jdbc/CountryResumeJDBC</jta-data-source>
+		<class>tk.ww3app.model.CountryResume</class>
+	</persistence-unit>
+	<persistence-unit name="CountryStatPU" transaction-type="JTA">
+		<jta-data-source>jdbc/CountryStatJDBC</jta-data-source>
+		<class>tk.ww3app.model.CountryStat</class>
+	</persistence-unit>
+	<persistence-unit name="KeywordPU" transaction-type="JTA">
+		<jta-data-source>jdbc/KeywordJDBC</jta-data-source>
+		<class>tk.ww3app.model.Keyword</class>
+	</persistence-unit>
+	<persistence-unit name="KeywordResumePU" transaction-type="JTA">
+		<jta-data-source>jdbc/KeywordResumeJDBC</jta-data-source>
+		<class>tk.ww3app.model.KeywordResume</class>
+	</persistence-unit>
+	<persistence-unit name="UserPU" transaction-type="JTA">
+		<jta-data-source>jdbc/UserJDBC</jta-data-source>
+		<class>tk.ww3app.model.User</class>
+	</persistence-unit>
+</persistence>
