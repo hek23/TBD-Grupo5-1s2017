@@ -19,6 +19,14 @@ app.config(function($routeProvider){
         templateUrl:'views/add.html',
         controller:'AddCtrl'
         })
+    .when('/lineal', {
+        templateUrl:'views/lineal.html',
+        controller:'Graficolineal'
+        })
+    .when('/torta', {
+        templateUrl:'views/torta.html',
+        controller:'Graficotorta'
+        })
     .otherwise({
         redirectTo: '/home'
       });

@@ -1,0 +1,11 @@
+{
+    "cantidadPaises": "9",
+    "cantidadTweets": "2140",
+    "info":
+    [
+        {
+            "paises": ["England","Japan","USA","Haiti"],
+            "tweets": ["500","900","700","40"]
+        }
+    ]
+}

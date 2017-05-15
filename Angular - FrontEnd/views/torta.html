@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html ng-app="angularSpa">
+<head>
+    <meta charset="utf-8">
+    <title>Gráfico de Torta</title>
+                
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
+    
+    <script type="text/javascript" src="angular.min.js"></script>
+</head>
+    
+<body>
+<script>
+    var etiquetas2 = ["England","Japan","USA","Haiti"];
+    var mencionesTT1 = ["500","900","700","40"];
+</script> 
+<div>
+    A continuación se muestra un gráfico de torta.
+    Este gráfico contiene información acerca de la cantidad de tweets realizados en cada país.
+    Puede interactuar con el gráfico.
+</div>    
+<canvas id="myPieChart" width="400" height="400"></canvas> 
+
+
+
+<script>
+var misDatos2 = angular.module('datosApp2', []);
+misDatos2.controller('controladorDatos2',function($scope,$http){
+        $scope.paises = [];
+        $scope.tweets = [];
+		$scope.importar2 = function(){
+			var json2 = 
+                {
+                    "cantidadPaises": "9",
+                    "cantidadTweets": "2140",
+                    "info":
+                    [
+                        {
+                            "paises": ["England","Japan","USA","Haiti"],
+                            "tweets": ["500","900","700","40"]
+                        }
+                    ]
+                }
+
+            
+            angular.forEach(json2.info, function (item2) {
+                        angular.forEach(item2.paises, function (pais) {
+                            $scope.paises.push(pais);
+                        });
+                        angular.forEach(item2.tweets, function (tweet) {
+                            $scope.tweets.push(tweet);
+                              });
+                
+                    });
+		}
+        $scope.importar2();
+});
+
+    var torta = document.getElementById("myPieChart");
+    
+    var myPieChart = new Chart(torta, {
+    type: 'pie',
+    data: {
+        labels: etiquetas2,
+        datasets: [
+            {
+                data: mencionesTT1,
+                backgroundColor: [
+                    "#8A0808",
+                    "#4B8A08",
+                    "#0431B4",
+                    "#D358F7"
+                ],
+                hoverBackgroundColor: [
+                    "#8A0808",
+                    "#4B8A08",
+                    "#0431B4",
+                    "#D358F7"
+                ]
+            }
+        ]
+    },
+    
+    options: {
+        animation: {
+            animateScale: true
+        }
+    }
+}
+                          );
+</script>
+
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"   integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc="   crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-route.min.js"></script>
+<script src="js/app.js"></script>
+
+<script src="js/controllers/graficotorta.js"></script>
+
+</body>
+</html>

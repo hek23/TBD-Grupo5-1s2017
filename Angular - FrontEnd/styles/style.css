@@ -1,0 +1,150 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700);
+
+body{
+	font-family: 'Lato', sans-serif;
+}
+textarea{
+    max-width: 100%;
+}
+a{
+    color: #000;
+}
+.help-block {
+    display: block;
+    margin-top: 0px;
+    margin-bottom:0px;
+    color: #737373;
+}
+.help-block ul  {
+    margin-top: 0;
+    margin-bottom: 0px;
+}
+
+#form-login .alert-danger{
+	padding:4px 10px;
+}
+header{
+	margin-bottom: 40px;
+}
+.navbar-login
+{
+    min-width: 305px;
+    padding: 10px;
+    padding-bottom: 0px;
+    color: #333;
+}
+
+.navbar-login-session
+{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.icon-size
+{
+    font-size: 87px;
+}
+#botones-cuenta button, #cuentas-para-pedido button, #cuentas-botones button{
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+#botones-cuenta button:last-child, #cuentas-para-pedido button:last-child, #cuentas-botones button:last-child{
+    margin-right: 0;
+}
+#cabecera-categorias th{
+	text-align: center;
+}
+#cabecera-temas th:first-child{
+    text-align: left;
+}
+#cabecera-temas th{
+    text-align: center;
+}
+#cabecera-mensajes th:first-child{
+    text-align: left;
+}
+#cabecera-mensajes th{
+    text-align: center;
+}
+#nuevo-tema{
+    margin-bottom: 20px;
+}
+.panel-categoria .panel-body div:nth-child(2),.panel-categoria .panel-body div:nth-child(3){
+	text-align: center;
+}
+.panel-categoria .panel-body div:nth-child(4){
+    text-align: center;
+}
+.panel-categoria .panel-heading h3{
+	text-transform: uppercase;
+	font-size: 14px;
+	font-weight: 700;
+	padding-top: 4px;
+}
+.datos-autor{
+    margin: 10px 0 0 0;
+}
+.datos-autor a{
+    text-decoration: none;
+}
+#contenido-tema h3{
+    margin: 5px 0;
+}
+#contenido-tema #fecha{
+    font-size: 12px;
+}
+.comentar-tema{
+    margin-bottom: 20px;
+}
+.panel-tema .well{
+    margin-bottom: 0;
+}
+.panel-comentario .well{
+    margin-bottom: 0;
+}
+.warning-responder{
+    display: inline-block;
+    padding: 3px 12px;
+    background: #fcf8e3;
+    border: 1px solid #faebcc;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    margin-left: 15px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.titulo-responder h4{
+    margin:0;
+}
+.titulo-categoria{
+    border-bottom: 0;
+}
+.panel-tema .img-thumbnail, .panel-comentario .img-thumbnail{
+    max-height: 100px;
+}
+#datos .img-thumbnail{
+    max-height: 260px;
+}
+#datos p{
+    margin-bottom: 20px;
+}
+#act-reciente h4{
+    margin-top: 10px;
+}
+.btn-redactar{
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+.modal-footer{
+    border-top: 0;
+}
+
+footer{
+    background: #f2f2f2;
+    height: 150px;
+    margin-top: 50px;
+}
