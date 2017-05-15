@@ -1,5 +1,6 @@
 package tk.ww3app.service;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -32,15 +33,34 @@ public class CountryStatService extends Application{
 	@Path("/listcountrystats")
 	@Produces("application/json")
 	public List<CountryStat> findAll(){
-		return FacadeInjection.findAll();
+		List<CountryStat> lcs = FacadeInjection.findAll();
+		for (int i=0; i<lcs.size(); i++){
+			try {
+				lcs.get(i).cambiarformatoFecha();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return lcs;
 	}
 	
 	@GET
     @Path("/getcountrystat")
     @Produces("application/json")
     public CountryStat find(@QueryParam("id") Integer id) {
-        return FacadeInjection.find(id);
+        CountryStat cs = FacadeInjection.find(id);
+        CountryStat csr = cs;
+        try {
+			cs.cambiarformatoFecha();
+			return cs;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return csr;
+		}
     }
+	
 	
 	
 

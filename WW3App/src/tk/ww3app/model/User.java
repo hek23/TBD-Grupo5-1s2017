@@ -33,9 +33,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u.username FROM User u")
     , @NamedQuery(name = "User.findByIdUser", query = "SELECT u.username FROM User u WHERE u.idUser = :idUser")
-    , @NamedQuery(name = "User.findByUsername", query = "SELECT u.username FROM User u WHERE u.username = :username")
-    , @NamedQuery(name = "User.findByPassword", query = "SELECT u.username FROM User u WHERE u.password = :password")
-    , @NamedQuery(name = "User.findByPrivileges", query = "SELECT u.username FROM User u WHERE u.privileges = :privileges")})
+    , @NamedQuery(name = "User.findByUsername", query = "SELECT u.username FROM User u WHERE u.username = :username")})
+    //, @NamedQuery(name = "User.findByPassword", query = "SELECT u.username FROM User u WHERE u.password = :password")
+    //, @NamedQuery(name = "User.findByPrivileges", query = "SELECT u.username FROM User u WHERE u.privileges = :privileges")})
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,7 +49,7 @@ public class User implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "username")
     private String username;
-    @Basic(optional = false)
+    /*@Basic(optional = true)
     @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "password")
@@ -58,7 +58,7 @@ public class User implements Serializable {
     @NotNull
     @Size(min = 1, max = 9)
     @Column(name = "privileges")
-    private String privileges;
+    private String privileges*/
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
     private Collection<Keyword> keywordCollection;
 
@@ -69,11 +69,11 @@ public class User implements Serializable {
         this.idUser = idUser;
     }
 
-    public User(Integer idUser, String username, String password, String privileges) {
+    public User(Integer idUser, String username) {
         this.idUser = idUser;
         this.username = username;
-        this.password = password;
-        this.privileges = privileges;
+        //this.password = password;
+       //this.privileges = privileges;
     }
 
     public Integer getIdUser() {
@@ -92,7 +92,7 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public String getPassword() {
+    /*public String getPassword() {
         return password;
     }
 
@@ -106,7 +106,7 @@ public class User implements Serializable {
 
     public void setPrivileges(String privileges) {
         this.privileges = privileges;
-    }
+    }*/
 
     @XmlTransient
     public Collection<Keyword> getKeywordCollection() {
@@ -143,3 +143,4 @@ public class User implements Serializable {
     }
     
 }
+

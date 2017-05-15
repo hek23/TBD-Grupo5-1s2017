@@ -6,6 +6,8 @@
 package tk.ww3app.model;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -151,4 +153,12 @@ public class CountryStat implements Serializable {
         return "model.CountryStat[ idTweetsCount=" + idTweetsCount + " ]";
     }
     
+    public void cambiarformatoFecha() throws ParseException { 
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+        String fechaString = this.getDate().toString(); // Convierte Date a String
+        Date miFecha = formato.parse(fechaString); // convierte String a Date
+        this.setDate(miFecha);
+      }
 }
+    
+

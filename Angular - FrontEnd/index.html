@@ -38,8 +38,10 @@
 var misDatos = angular.module('datosApp', []);
 misDatos.controller('controladorDatos',function($scope,$http){
         $scope.importar = function(){
-            $http.get('datosLineal.json').success(function(datos){
+            $http.get('http://localhost:8080/WW3App/JsonService/listcountryresume').success(function(datos){
                 $scope.informacionLineal = datos;
+                console.log("Estoy buscando", $scope.informacionLineal);
+
             });
         }
         $scope.importar();
