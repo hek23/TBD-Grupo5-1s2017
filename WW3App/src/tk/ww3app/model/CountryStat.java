@@ -154,10 +154,18 @@ public class CountryStat implements Serializable {
     }
     
     public void cambiarformatoFecha() throws ParseException { 
-        SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
-        String fechaString = this.getDate().toString(); // Convierte Date a String
-        Date miFecha = formato.parse(fechaString); // convierte String a Date
-        this.setDate(miFecha);
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");  
+    	Date fechaActual = this.getDate();
+    	String fechaConFormato = sdf.format(fechaActual);
+    	try{  
+    		Date nuevaFecha = sdf.parse(fechaConFormato);  
+    		this.setDate(nuevaFecha);
+    		}
+    	catch(ParseException pe){  
+    		System.out.println("FAIL");
+    		
+    	}  
+    	
       }
 }
     

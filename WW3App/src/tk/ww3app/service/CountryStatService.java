@@ -50,15 +50,13 @@ public class CountryStatService extends Application{
     @Produces("application/json")
     public CountryStat find(@QueryParam("id") Integer id) {
         CountryStat cs = FacadeInjection.find(id);
-        CountryStat csr = cs;
         try {
 			cs.cambiarformatoFecha();
-			return cs;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return csr;
 		}
+        return cs;
     }
 	
 	

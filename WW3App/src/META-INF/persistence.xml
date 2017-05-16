@@ -26,4 +26,8 @@
 		<jta-data-source>jdbc/UserJDBC</jta-data-source>
 		<class>tk.ww3app.model.User</class>
 	</persistence-unit>
+	<persistence-unit name="KeywordJSONPU" transaction-type="JTA">
+		<jta-data-source>jdbc/KeywordJSONJDBC</jta-data-source>
+		<class>tk.ww3app.model.KeywordJSONResume</class>
+	</persistence-unit>
 </persistence>
