@@ -29,7 +29,8 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
  *
  * @author hek23
  */
-@Entity
+@Entity 
+@IdClass(KeywordJSONResume.class)
 @Immutable
 @Table(name = "KeywordJSONResume")
 @XmlRootElement
@@ -44,17 +45,22 @@ public class KeywordJSONResume implements Serializable {
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
 	@Id
-	@NotNull
+    @NotNull
 	@Basic(optional = false)
     @Column(name = "rtc")
     private Double rtc;
-    @Column(name = "tc")
+    @Id
+    @NotNull
+	@Basic(optional = false)
+	@Column(name = "tc")
     private Double tc;
+    @Id
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "word")
     private String word;
+    @Id
     @Column(name = "Date")
     @Temporal(TemporalType.DATE)
     private Date date;

@@ -1,7 +1,6 @@
 package tk.ww3app.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -18,19 +17,21 @@ import tk.ww3app.facade.KeywordFacade;
 import tk.ww3app.facade.KeywordResumeFacade;
 import tk.ww3app.facade.KeywordResumeJSONFacade;
 import tk.ww3app.facade.UserFacade;
-import tk.ww3app.model.CircData;
-import tk.ww3app.model.CircObject;
+import tk.ww3app.model.CircularGraphInfo;
 import tk.ww3app.model.CountryResume;
-import tk.ww3app.model.CountryStat;
-import tk.ww3app.model.KeywordResume;
-import tk.ww3app.model.LinearData;
-import tk.ww3app.model.LinearObject;
+import tk.ww3app.model.GraphPoint;
+import tk.ww3app.model.Keyword;
+import tk.ww3app.model.LinearGraphFrame;
+import tk.ww3app.model.LinearGraphInfo;
 import tk.ww3app.model.KeywordJSONResume;
 
 @Path("/")
 @ApplicationPath("/JsonService")
+
 public class AuxiliarService extends Application{
 
+	//Dado que se generarán objetos y JSON, se necesitará acceso a todo el código
+	//Por ello se inyectan todos los facade
 	@EJB 
 	KeywordResumeFacade KWRFacadeInjection;
 	@EJB 
@@ -49,49 +50,55 @@ public class AuxiliarService extends Application{
 	@GET
 	@Path("/auxiliarJsonFullCake")
 	@Produces("application/json")
-	public CircData getGraphData(){
+	public GraphPoint getCircularData(){
 		//Se calcula cuantos paises hay en el gráfico y cuantos tweets hay en total
 		//Para esto se usa la vista CountryResume
 		List<CountryResume> cr = CRFFacadeInjection.findAll();
 		//Se calcula la suma de los tweets
-		int sumaTweets = 0;
+		//int sumaTweets = 0;
 		int cantidadPaises = 0;
-		List<String> paises = new ArrayList<String>();
-		List<String> tweets = new ArrayList<String>();
+		//Se define una lista de objetos, que representan la informacion del gráfico.
+		//La lista en su conjunto es toda la info. Cada objeto es una parte del gráfico.
+		List<GraphPoint> lgp = new ArrayList<GraphPoint>();
 		for (int i=0; i<cr.size(); i++){
+			//Solo se agregarán los puntos, tal que solo se tomen los que tienen tweets en el resumen
 			if (cr.get(i).getTweetsCount().intValue()>0){
-				sumaTweets = sumaTweets + cr.get(i).getTweetsCount().intValue();
+				//sumaTweets = sumaTweets + cr.get(i).getTweetsCount().intValue();
+				//Se controla la cantidad de Paises en el gráfico
 				cantidadPaises = cantidadPaises + 1;
-				paises.add(cr.get(i).getName());
-				tweets.add(String.valueOf(cr.get(i).getTweetsCount().intValue()));
+				//Ahora se crea el objeto que lleva la información en si
+				GraphPoint gp = new GraphPoint(cr.get(i).getName(), (cr.get(i).getTweetsCount()));
+				//Se agrega el punto a la lista
+				lgp.add(gp);
 			}
 		}
-		CircObject circobj = new CircObject(paises, tweets);
-		CircData circ = new CircData(String.valueOf(cantidadPaises), String.valueOf(sumaTweets), circobj);
-		return circ;
-		
+		//Ahora que se tienen todos los datos se crea el objeto que representa al gráfico en si.
+		CircularGraphInfo circData = new CircularGraphInfo(cantidadPaises, lgp); 
+		//Se retorna el objeto del gráfico como un JSON por la anotacion al inicio.
+		return lgp.get(0);	
 	}
+	
 	@GET
 	@Path("/auxiliarJsonFullLinear")
 	@Produces("application/json")
-	public LinearData getLinearData(){
-		List<KeywordJSONResume> krfj = KRFJson.findAll();
-		List<String> fechas = new ArrayList<String>();
-		List<Integer> tweets = new ArrayList<Integer>();
-		for (int i=0; i<krfj.size(); i++){
-			fechas.add(krfj.get(i).getDate().toString().split("T")[0]);
-			tweets.add(krfj.get(i).getTc().intValue());
+	public LinearGraphInfo getLinearData(){
+		List<LinearGraphFrame> listaDeCapas = new ArrayList<LinearGraphFrame>();
+		List<Keyword> lkw= KWFacadeInjection.findAll();
+		for (Keyword kw : lkw){
+			List<KeywordJSONResume> fullkeyword = KRFJson.findByWord(kw.getWord());
+			LinearGraphFrame info = new LinearGraphFrame(kw.getWord(), null);
+			List<GraphPoint> listaPuntos = new ArrayList<GraphPoint>();
+			for (KeywordJSONResume kwr : fullkeyword){
+				Double tweets = kwr.getRtc() + kwr.getTc();
+				GraphPoint punto = new GraphPoint(null, tweets);
+				punto.insertarFecha(kwr.getDate());
+				listaPuntos.add(punto);
+			}
+			info.setPuntos(listaPuntos);
+			listaDeCapas.add(info);
 		}
-		List<LinearObject> lolist = new ArrayList<LinearObject>();
-		for (int i=0; i<krfj.size(); i++){
-			String concepto = krfj.get(i).getWord();
-			LinearObject lo =new LinearObject(concepto, fechas, tweets);
-			lolist.add(lo);
+		LinearGraphInfo lpgi = new LinearGraphInfo(listaDeCapas.get(0).getPuntos().size(), listaDeCapas);	
+		return lpgi;
 		}
-		LinearData ld = new LinearData(String.valueOf(fechas.size()), lolist);
-		return ld;
-		
-		
-	}
 	
-}
+	}

@@ -90,7 +90,7 @@ def getAllKeywords():
     #Se crea el cursor para obtener datos
     sqlcursor = mysqldatabase.cursor()
     #Se ejecuta la consulta para obtener las palabras clave
-    sqlcursor.execute("SELECT Keyword.word FROM Keyword")
+    sqlcursor.execute("SELECT Keyword.word FROM Keyword ORDER BY Keyword.idKeyword")
     #Se rescatan dichas palabras desde el cursor.
     wordsSQL = sqlcursor.fetchall()
     #Se procesa el resultado del cursor, para crear el formato solicitado por la librería
@@ -125,6 +125,7 @@ def makeCountResume():
             retweets = mongoCountRetweetConceptCountry(pais, keyword)
             sqlcursor.execute("""INSERT INTO CountryStat (RetweetsCount, TweetsCount, Country, Keyword) VALUES (%s, %s, %s, %s)""", (retweets, tweets, countryId, keywordId))
             mysqldatabase.commit()
+            print (keyword, pais)
             countryId = countryId + 1
         keywordId = keywordId + 1
     return 0
@@ -152,4 +153,4 @@ def getOriginalTweet(tweetid, concept):
             return False
 
 client = MongoClient('localhost', 27017)
-makeCountResume()
+print makeCountResume()

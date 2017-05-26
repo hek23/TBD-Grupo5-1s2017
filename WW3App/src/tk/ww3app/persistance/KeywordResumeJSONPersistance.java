@@ -1,5 +1,7 @@
 package tk.ww3app.persistance;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -23,5 +25,9 @@ public class KeywordResumeJSONPersistance extends AbstractFacade<KeywordJSONResu
 	protected EntityManager getEntityManager() {
 		return this.em;
 	}
+	
+	public List<KeywordJSONResume> findByWord(String word){
+		   return this.em.createNamedQuery("KeywordJSONResume.findByWord", KeywordJSONResume.class).setParameter("word", word).getResultList();
+		}
 
 }

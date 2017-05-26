@@ -47,6 +47,7 @@ public abstract class AbstractFacade<T> {
         q.setFirstResult(range[0]);
         return q.getResultList();
     }
+    
 
     public int count() {
         javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();

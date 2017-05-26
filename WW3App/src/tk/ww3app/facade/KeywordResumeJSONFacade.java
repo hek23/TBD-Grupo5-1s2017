@@ -18,6 +18,8 @@ public interface KeywordResumeJSONFacade {
 	public KeywordJSONResume find(Object id);
 
 	public List<KeywordJSONResume> findAll();
+	
+	public List<KeywordJSONResume> findByWord(String word);
 
 	public List<KeywordJSONResume> findRange(int[] range);
 
