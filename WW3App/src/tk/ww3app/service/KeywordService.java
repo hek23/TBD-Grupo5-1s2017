@@ -19,7 +19,7 @@ import tk.ww3app.facade.KeywordFacade;
 import tk.ww3app.model.Keyword;
 
 @Path("/")
-@ApplicationPath("/JsonService")
+@ApplicationPath("/")
 
 public class KeywordService extends Application{
 	

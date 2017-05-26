@@ -19,7 +19,7 @@ import tk.ww3app.facade.KeywordResumeFacade;
 import tk.ww3app.model.KeywordResume;
 
 @Path("/")
-@ApplicationPath("/JsonService")
+@ApplicationPath("/")
 
 public class KeywordResumeService extends Application{
 	

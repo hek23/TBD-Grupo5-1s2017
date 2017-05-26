@@ -26,7 +26,7 @@ import tk.ww3app.model.LinearGraphInfo;
 import tk.ww3app.model.KeywordJSONResume;
 
 @Path("/")
-@ApplicationPath("/JsonService")
+@ApplicationPath("/")
 
 public class AuxiliarService extends Application{
 

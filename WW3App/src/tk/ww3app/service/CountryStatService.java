@@ -20,7 +20,7 @@ import tk.ww3app.facade.CountryStatFacade;
 import tk.ww3app.model.CountryStat;
 
 @Path("/")
-@ApplicationPath("/JsonService")
+@ApplicationPath("/")
 
 public class CountryStatService extends Application{
 	

@@ -19,7 +19,7 @@ import tk.ww3app.facade.UserFacade;
 import tk.ww3app.model.User;
 
 @Path("/")
-@ApplicationPath("/JsonService")
+@ApplicationPath("/")
 
 public class UserService extends Application{
 	
