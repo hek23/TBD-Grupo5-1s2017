@@ -79,13 +79,6 @@ cat ~/.profile_backup ~/scripts/javadir.d > ~/.profile
 source ~/.profile
 sudo chown -R $USER /usr/local
 cd ~
-wget http://www-us.apache.org/dist/lucene/java/6.5.1/lucene-6.5.1.zip
-unzip lucene-6.5.1.zip
-rm lucene-6.5.1.zip
-cd ~/lucene-6.5.1/core
-mv lucene-core-6.5.1.jar /usr/local/glassfish4/glassfish/lib/lucene-core-6.5.1.jar
-cd ~
-rm -rf lucene-6.5.1
 wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.41.zip
 unzip mysql-connector-java-5.1.41.zip
 rm ~/mysql-connector-java-5.1.41.zip
