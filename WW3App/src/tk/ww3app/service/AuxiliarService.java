@@ -19,7 +19,9 @@ import tk.ww3app.facade.KeywordResumeJSONFacade;
 import tk.ww3app.facade.UserFacade;
 import tk.ww3app.model.CircularGraphInfo;
 import tk.ww3app.model.CountryResume;
+import tk.ww3app.model.CountryStat;
 import tk.ww3app.model.GraphPoint;
+import tk.ww3app.model.InfoGenerationGraph;
 import tk.ww3app.model.Keyword;
 import tk.ww3app.model.LinearGraphFrame;
 import tk.ww3app.model.LinearGraphInfo;
@@ -101,4 +103,12 @@ public class AuxiliarService extends Application{
 		return lpgi;
 		}
 	
+	/*@GET
+	@Path("/auxiliarJsonFullLinear")
+	@Produces("application/json")
+	public List<InfoGenerationGraph> getGenerationData(){
+		List<InfoGenerationGraph> lig = new ArrayList<InfoGenerationGraph>();
+		List<CountryStat> lcs = CSFFacadeInjection.findByCountry();
+		
+	}*/
 	}

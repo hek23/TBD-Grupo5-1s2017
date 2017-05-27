@@ -1,6 +1,11 @@
-package tew;
+package tk.ww3app.lucene;
 
-import com.opencsv.CSVReader;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -10,6 +15,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -25,11 +31,14 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 
+import javax.ejb.EJB;
+import tk.ww3app.model.Keyword;
+import tk.ww3app.facade.KeywordFacade;
 
+public class IndiceLucene {
 
-public class Index {
-
-    @EJB 
+    @EJB
+	static 
     KeywordFacade KWFacadeInjection;
 
     public static void crearIndice() throws IOException{
@@ -44,10 +53,8 @@ public class Index {
             doc.add(new StringField(palabra.getWord(), ".", Field.Store.YES));
             writer.addDocument(doc);
         }
+           
        
-          
-            
-        
         writer.close();
     }
 }
