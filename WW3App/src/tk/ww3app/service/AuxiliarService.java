@@ -52,7 +52,7 @@ public class AuxiliarService extends Application{
 	@GET
 	@Path("/auxiliarJsonFullCake")
 	@Produces("application/json")
-	public GraphPoint getCircularData(){
+	public CircularGraphInfo getCircularData(){
 		//Se calcula cuantos paises hay en el gráfico y cuantos tweets hay en total
 		//Para esto se usa la vista CountryResume
 		List<CountryResume> cr = CRFFacadeInjection.findAll();
@@ -77,7 +77,7 @@ public class AuxiliarService extends Application{
 		//Ahora que se tienen todos los datos se crea el objeto que representa al gráfico en si.
 		CircularGraphInfo circData = new CircularGraphInfo(cantidadPaises, lgp); 
 		//Se retorna el objeto del gráfico como un JSON por la anotacion al inicio.
-		return lgp.get(0);	
+		return circData;	
 	}
 	
 	@GET
