@@ -23,5 +23,7 @@ public class KeywordPersistance extends AbstractFacade<Keyword> implements Keywo
 	protected EntityManager getEntityManager() {
 		return this.em;
 	}
+	
+	
 
 }

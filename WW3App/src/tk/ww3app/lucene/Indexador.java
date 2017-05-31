@@ -5,6 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,9 +37,7 @@ import tk.ww3app.facade.KeywordFacade;
 
 public class Indexador {
 	
-	@EJB 
 	KeywordFacade KWFacadeInjection;
-
     public Indexador() {
     }
     private IndexWriter escritura = null;
@@ -59,20 +63,54 @@ public class Indexador {
           
           getIndexadoEscrito(true);
 
-          List<Keyword> palabras = KWFacadeInjection.findAll();
+          List<String> palabras = null;
+		try {
+			palabras = obtenerPalabras();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-          for (Keyword palabra : palabras) {
-        	  System.out.println("Indexando keywords: " + palabra.getWord());
+          for (String palabra : palabras) {
+        	  System.out.println("Indexando keywords: " + palabra);
               IndexWriter writer = getIndexadoEscrito(false);
               Document doc = new Document();
-              doc.add(new Field("keyword", palabra.getWord(), Field.Store.YES, Field.Index.TOKENIZED));
-              
+              doc.add(new Field("keyword", palabra, Field.Store.YES, Field.Index.TOKENIZED));
               writer.addDocument(doc);             
           }
 
           cerrarIndice();
      }  
     
+    public List<String> obtenerPalabras() throws SQLException{
+    	try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}	
+        Connection con = null;
+        String sURL = "jdbc:mysql://localhost:3306/WW3App";
+        con = DriverManager.getConnection(sURL,"root","root");
+    	Statement stmt = null;
+        String query = "select word " +
+                       "from WW3App.Keyword";
+        try {
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            List<String> palabras = new ArrayList<String>();
+            while (rs.next()) {
+            	palabras.add(rs.getString("word"));
+       
+            }
+            return palabras;
+        } catch (SQLException e ) {
+            System.out.println(e);
+        } finally {
+            if (stmt != null) { stmt.close(); }
+        }
+		return null;
+    }
   
     
     
