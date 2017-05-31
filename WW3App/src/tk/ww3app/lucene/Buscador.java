@@ -1,5 +1,8 @@
 package tk.ww3app.lucene;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -16,13 +19,19 @@ public class Buscador {
 
 	    public Buscador() throws IOException {
 	        buscador = new IndexSearcher("src/tk/ww3app/lucene/lucene_index");
-	        analizador = new QueryParser("keyword", new StandardAnalyzer());
+	        analizador = new QueryParser("Contenido", new StandardAnalyzer());
 	    }
+	    
+
 	    
 	    public Hits busqueda(String consulta)
 	    throws IOException, ParseException {
-	        Query query = analizador.parse(consulta);        
+	        Query query = analizador.parse(consulta);
+	        
 	        Hits hits = buscador.search(query);
+
 	        return hits;
 	    }
+	    
+	  
 }
