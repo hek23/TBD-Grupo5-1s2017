@@ -18,7 +18,7 @@ import javax.ws.rs.core.Application;
 import tk.ww3app.facade.CountryResumeFacade;
 import tk.ww3app.model.CountryResume;
 
-@Path("/")
+@Path("/crs")
 @ApplicationPath("/")
 
 public class CountryResumeService extends Application{

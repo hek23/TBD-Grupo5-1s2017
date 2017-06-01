@@ -21,7 +21,7 @@ public interface CountryStatFacade {
 
 	public List<CountryStat> findRange(int[] range);
 	
-	public List<CountryStat> findByCountry(String country);
+	public List<Object[]> findByCountry(String country);
 
 	public int count();
 

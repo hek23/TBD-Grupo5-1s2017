@@ -18,7 +18,7 @@ import javax.ws.rs.core.Application;
 import tk.ww3app.facade.KeywordFacade;
 import tk.ww3app.model.Keyword;
 
-@Path("/")
+@Path("/kws")
 @ApplicationPath("/")
 
 public class KeywordService extends Application{

@@ -4,10 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 
 import tk.ww3app.facade.CountryFacade;
@@ -107,17 +114,26 @@ public class AuxiliarService extends Application{
 	
 	
 	@GET
-	@Path("/jsongenerationgraph")
+	@Path("/jsongenerationgraph/{nombrePais}")
 	@Produces("application/json")
-	public List<CountryStat> getGenerationData(){
+	public JsonArray getGenerationData(@PathParam("nombrePais")String ctryName){
 		List<InfoGenerationGraph> lig = new ArrayList<InfoGenerationGraph>();
 		List<Country> lc = new ArrayList<Country>();
 		lc = CFFacadeInjection.findAll();
-		List<CountryStat> lcs = null;
-		for (Country pais : lc){
-			lcs = CSFFacadeInjection.findByCountry(pais.getName());
+		JsonArrayBuilder arrayext = Json.createArrayBuilder();
+		System.out.println(ctryName);
+		List<Object[]> lcs = CSFFacadeInjection.findByCountry(ctryName);
+		for (Object[] obj : lcs){
+			System.out.println(obj);
+			JsonObjectBuilder builder = Json.createObjectBuilder();
+			Double tweets = (Double)obj[1] + (Double)obj[0];
+			int tweetctd = tweets.intValue();
+			JsonObject punto = builder.add("fecha",obj[2].toString()).add("cantidad",tweetctd).build();
+			arrayext.add(punto);
+			arrayext.add(punto);
 		}
-		return lcs;
+		
+		return arrayext.build();
 		
 		
 		}

@@ -19,7 +19,7 @@ import javax.ws.rs.core.Application;
 import tk.ww3app.facade.CountryStatFacade;
 import tk.ww3app.model.CountryStat;
 
-@Path("/")
+@Path("/ctryStat")
 @ApplicationPath("/")
 
 public class CountryStatService extends Application{

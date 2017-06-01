@@ -1,5 +1,7 @@
 package tk.ww3app.persistance;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,4 +26,7 @@ public class CountryPersistance extends AbstractFacade<Country> implements Count
 		return this.em;
 	}
 
+	public List<String> findNames(){
+		return this.em.createNativeQuery("SELECT Country.Name FROM WW3App.Country;").getResultList();
+	}
 }

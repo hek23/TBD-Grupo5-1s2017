@@ -18,7 +18,7 @@ import javax.ws.rs.core.Application;
 import tk.ww3app.facade.UserFacade;
 import tk.ww3app.model.User;
 
-@Path("/")
+@Path("/us")
 @ApplicationPath("/")
 
 public class UserService extends Application{

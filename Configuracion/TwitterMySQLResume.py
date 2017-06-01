@@ -16,6 +16,59 @@ import json
 from tweepy import OAuthHandler
 import MySQLdb
 
+def esBisiesto(year):
+    return year % 4 == 0 and year % 100 != 0 or year % 400 == 0
+
+def fechaString():
+    #Primero se obtiene el dia anterior al actual para el resumen
+    fecha=datetime.date.today()
+    dia = fecha.day -1
+    mes = fecha.month
+    ano = fecha.year
+    if dia<1:
+        #Entonces es el dia del mes anterior
+        mes = mes -1
+        if (mes == 0):
+            mes = mes +12
+            ano = ano -1
+        #Ahora se ve que dia queda
+        if mes in [1,3,5,7,8,10,12]:
+            mes = mes + 31
+        else if mes == 2:
+            if (esBisiesto(ano)):
+                mes = mes + 29
+            else:
+                mes = mes+28
+        else:
+            mes = mes + 30
+        
+    if (mes == 1):
+        mes = "Jan"
+    else if (mes == 2):
+        mes = "Feb"
+    else if (mes == 3):
+        mes = "Mar"
+    else if (mes == 4):
+        mes = "Abr"
+    else if (mes == 5):
+        mes = "May"
+    else if (mes == 6):
+        mes = "Jun"
+    else if (mes == 7):
+        mes = "Jul"
+    else if (mes == 8):
+        mes = "Aug"
+    else if (mes == 9):
+        mes = "Sep"
+    else if (mes == 10):
+        mes = "Oct"
+    else if (mes == 11):
+        mes = "Nov"
+    else:
+        mes = "Dic"
+    fecha = mes + " " + str(dia)
+    return fecha
+    
 def mongoCountPerCountry(countryCode):
     client = MongoClient('localhost', 27017)
     db = client.politica
@@ -32,6 +85,7 @@ def mongoCountTweetConceptCountry(countryCode, concept):
     client = MongoClient('localhost', 27017)
     #Se extraen y cuentan los tweets (no retweets) que hablan de un concepto y son de un pais determinado
     db = client.politica
+    fecha = fechaString()
     count = db.tweets.count({"$and": [{"place.country_code" : str(countryCode)}, {"rt.original_id": "None"}, {"text":{"$regex": str(concept)}}]})
     return count
 

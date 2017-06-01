@@ -28,10 +28,12 @@ public class CountryStatPersistance extends AbstractFacade<CountryStat> implemen
 		return this.em;
 	}
 	
-	public List<CountryStat> findByCountry(String Country){
-		String formato = "SELECT CountryStat.* FROM CountryStat INNER JOIN Country ON "
-				+ "(CountryStat.Country = Country.idCountry) WHERE Country.Name =" + "'" + Country + "';";
-		return this.em.createNativeQuery(formato, CountryStat.class).getResultList();
+	public List<Object[]> findByCountry(String Country){
+		String formato = "SELECT SUM(CountryStat.RetweetsCount), SUM(CountryStat.TweetsCount), CountryStat.Date as fecha, Country.Name as pais FROM CountryStat INNER JOIN Country ON "
+				+ "(CountryStat.Country = Country.idCountry) WHERE Country.Name =" + "'" + Country + "' GROUP BY Fecha, pais;";
+		List<Object[]> resultado = this.em.createNativeQuery(formato).getResultList();
+		return resultado;
+	
 		}
 
 }

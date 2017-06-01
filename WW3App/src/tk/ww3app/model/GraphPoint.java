@@ -27,7 +27,6 @@ public class GraphPoint {
 		this.tweets = tweets;
 	}
 	public void insertarFecha(Date fecha){
-		System.out.println(fecha);
 		String id = fecha.toString();
 		String[] fechaString = id.split(" ");
 		id = fechaString[2] + "-" + fechaString[1]+ "-" + fechaString[5]; 

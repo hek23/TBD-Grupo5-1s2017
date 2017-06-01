@@ -18,8 +18,11 @@ else
   cp /etc/skel/.profile ~/.profile
 fi
 cp ~/.profile ~/.profile_backup
-echo 'JAVA_HOME="/usr/lib/jvm/java-8-oracle/jre"'> ~/scripts/javadir.d
+echo 'JAVA_HOME="/usr/lib/jvm/java-8-oracle"'> ~/scripts/javadir.d
+echo 'JRE_HOME="/usr/lib/jvm/java-8-oracle/jre"'> ~/scripts/javare.d
 cat ~/.profile_backup ~/scripts/javadir.d > ~/.profile
+source ~/.profile
+cat ~/.profile_backup ~/scripts/javare.d > ~/.profile
 source ~/.profile
 wget http://download.java.net/glassfish/4.0/release/glassfish-4.0.zip
 sudo apt-get -y install unzip

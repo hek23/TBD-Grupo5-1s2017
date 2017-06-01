@@ -19,6 +19,8 @@ public interface CountryFacade {
 
 	public List<Country> findAll();
 
+	public List<String> findNames();
+	
 	public List<Country> findRange(int[] range);
 
 	public int count();
