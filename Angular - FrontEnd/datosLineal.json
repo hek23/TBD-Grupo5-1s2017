@@ -1,17 +1,84 @@
 {
-  "cantidadFechas": "9",
-  "info":
+  "cantidadFechas": 5,
+  "info": 
   [
     {
       "concepto": "Trump",
-      "fechas": ["01-02-2014", "02-02-2014", "03-02-2014", "04-02-2014", "05-02-2014", "06-02-2014", "07-02-2014", "08-02-2014", "09-02-2014"],
-      "tweets": [453, 357, 241, 100, 321, 576, 1200, 587, 811]
+      "puntos": 
+      [
+        {
+          "identificador": "30-May-2017",
+          "tweets": 100000
+        },
+        {
+          "identificador": "29-May-2017",
+          "tweets": 280
+        },
+        {
+          "identificador": "28-May-2017",
+          "tweets": 190
+        },
+        {
+          "identificador": "27-May-2017",
+          "tweets": 100
+        },
+        {
+          "identificador": "26-May-2017",
+          "tweets": 30
+        }
+      ]
     },
-
     {
-      "concepto": "Siria",
-      "fechas": ["01-02-2014", "02-02-2014", "03-02-2014", "04-02-2014", "05-02-2014", "06-02-2014", "07-02-2014", "08-02-2014", "09-02-2014"],
-      "tweets": [500, 3324, 221, 1120, 32, 315, 700, 512, 1000]
+      "concepto": "Concepto2",
+      "puntos": 
+      [
+        {
+          "identificador": "30-May-2017",
+          "tweets": 30
+        },
+        {
+          "identificador": "29-May-2017",
+          "tweets": 120
+        },
+        {
+          "identificador": "28-May-2017",
+          "tweets": 210
+        },
+        {
+          "identificador": "27-May-2017",
+          "tweets": 320
+        },
+        {
+          "identificador": "26-May-2017",
+          "tweets": 400
+        }
+      ]
+    },
+    {
+      "concepto": "Concepto3",
+      "puntos": 
+      [
+        {
+          "identificador": "30-May-2017",
+          "tweets": 100
+        },
+        {
+          "identificador": "29-May-2017",
+          "tweets": 100
+        },
+        {
+          "identificador": "28-May-2017",
+          "tweets": 100
+        },
+        {
+          "identificador": "27-May-2017",
+          "tweets": 100
+        },
+        {
+          "identificador": "26-May-2017",
+          "tweets": 100
+        }
+      ]
     }
   ]
 }

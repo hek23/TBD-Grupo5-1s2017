@@ -1,33 +1,24 @@
-var app = angular.module('angularSpa', [
-    'ngRoute'
-    ]);
-app.config(function($routeProvider){
+angular.module('angularSpa', [
+    'ngRoute'    ])
+    
+    .config(function($routeProvider){
     $routeProvider
     .when('/home', {
         templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
-      })
-    .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
-      })
-    .when('/actors', {
-        templateUrl:'views/actors.html',
-        controller:'ActorsCtrl'
-        })
-    .when('/add', {
-        templateUrl:'views/add.html',
-        controller:'AddCtrl'
-        })
-    .when('/lineal', {
-        templateUrl:'views/lineal.html',
-        controller:'Graficolineal'
-        })
+    })
     .when('/torta', {
-        templateUrl:'views/torta.html',
-        controller:'Graficotorta'
-        })
+      templateUrl: 'views/torta.html',
+      controller: 'tortaController'
+    })
+    .when('/lineal', {
+      templateUrl: 'views/lineal.html',
+      controller: 'linealController'
+    })
+    .when('/seleccion', {
+      templateUrl: 'views/seleccion.html',
+      controller: 'seleccionController'
+    })
     .otherwise({
-        redirectTo: '/home'
-      });
+      redirectTo: '/home'
+    });
 });
