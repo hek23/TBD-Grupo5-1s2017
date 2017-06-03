@@ -49,7 +49,7 @@ public class User implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "username")
     private String username;
-    /*@Basic(optional = true)
+    @Basic(optional = true)
     @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "password")
@@ -58,7 +58,7 @@ public class User implements Serializable {
     @NotNull
     @Size(min = 1, max = 9)
     @Column(name = "privileges")
-    private String privileges*/
+    private String privileges;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
     private Collection<Keyword> keywordCollection;
 
@@ -75,7 +75,18 @@ public class User implements Serializable {
         //this.password = password;
        //this.privileges = privileges;
     }
+    
+    public User(String username, String password){
+    	this.username = username;
+    	this.password = password;
+    }
 
+    public User(Integer idUser, String username, String password, String privileges) {
+        this.idUser = idUser;
+        this.username = username;
+        this.password = password;
+        this.privileges = privileges;
+    }
     public Integer getIdUser() {
         return idUser;
     }
@@ -92,7 +103,7 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    /*public String getPassword() {
+    public String getPassword() {
         return password;
     }
 
@@ -106,7 +117,7 @@ public class User implements Serializable {
 
     public void setPrivileges(String privileges) {
         this.privileges = privileges;
-    }*/
+    }
 
     @XmlTransient
     public Collection<Keyword> getKeywordCollection() {

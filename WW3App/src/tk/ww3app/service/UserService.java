@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.EJB;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -42,6 +45,14 @@ public class UserService extends Application{
         return FacadeInjection.find(id);
     }
 	
+	@GET
+	@Path("/checkuser/{user}/{pass}")
+	@Produces("application/json")
+	public JsonObject check(@PathParam("user") String user, @PathParam("pass") String pass){
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		boolean check =FacadeInjection.checkUser(user, pass);
+		return builder.add("check",true).build();
+	}
 	
 
 }

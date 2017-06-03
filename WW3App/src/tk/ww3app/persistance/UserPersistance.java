@@ -1,5 +1,7 @@
 package tk.ww3app.persistance;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,4 +26,11 @@ public class UserPersistance extends AbstractFacade<User> implements UserFacade 
 		return this.em;
 	}
 
+	public boolean checkUser(String user, String password){
+		List<User> usuarios = this.em.createNativeQuery("SELECT * FROM WW3App.User WHERE username ='" + user + "' and password ='"+ password + "';",User.class).getResultList();
+		if (usuarios.get(0) != null || usuarios.size() > 0){
+			return true;
+		}
+		return false;
+	}
 }

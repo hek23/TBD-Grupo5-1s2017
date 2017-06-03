@@ -20,6 +20,8 @@ public interface UserFacade {
 	public List<User> findAll();
 
 	public List<User> findRange(int[] range);
+	
+	public boolean checkUser(String user, String password);
 
 	public int count();
 

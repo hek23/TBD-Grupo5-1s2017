@@ -1,0 +1,9 @@
+#*-*coding: utf-8*-*
+#Importamos numpy completo con un alias para hacer mas facil su llamada
+import numpy as np
+#Utilizando la formula de la invertida con la adjunta
+#AInv = (1/|A|) * adj(A)
+#Donde la adjunta es la matriz de cofactores que toman valores inversos si no estan en la diagonal
+#Primero definimos la matriz a trabajar
+matriz = np.array(random.randint(1,15))
+print matriz
