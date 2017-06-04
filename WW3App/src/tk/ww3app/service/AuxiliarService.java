@@ -9,10 +9,13 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
@@ -23,6 +26,7 @@ import tk.ww3app.facade.CountryStatFacade;
 import tk.ww3app.facade.KeywordFacade;
 import tk.ww3app.facade.KeywordResumeFacade;
 import tk.ww3app.facade.KeywordResumeJSONFacade;
+import tk.ww3app.facade.SinonimosFacade;
 import tk.ww3app.facade.UserFacade;
 import tk.ww3app.model.CircularGraphInfo;
 import tk.ww3app.model.Country;
@@ -56,6 +60,9 @@ public class AuxiliarService extends Application{
 	UserFacade UFacadeInjection;
 	@EJB
 	KeywordResumeJSONFacade KRFJson;
+	@EJB
+	SinonimosFacade SFInjection;
+	
 	
 	@GET
 	@Path("/auxiliarJsonFullCake")
@@ -137,4 +144,63 @@ public class AuxiliarService extends Application{
 		
 		
 		}
+	
+	@POST
+	@Path("/addWord")
+	@Produces("application/json")
+	@Consumes("application/json")
+	public String addWord(JsonObject palabras){
+		JsonObject elem = palabras;
+		//Se sabe que la clave concepto trae el concepto nuevo
+		//La clave palabras trae un arreglo con los sinonimos
+		//Por tanto primero creamos un arreglo de palabras
+		JsonArray jsonPalabras = null;
+		String concepto = null;
+		int idConcepto = 0;
+		try{
+			jsonPalabras = elem.getJsonArray("palabras");
+		}
+		catch (Exception e){
+			System.out.println(e);
+			return "ERROR PALABRAS";
+		}
+		//Ahora se extrae el concepto
+		try{
+			concepto = elem.getString("concepto");
+		}
+		catch (Exception e){
+			System.out.println(e);
+			return "ERROR CONCEPTO";
+		}
+		//Ya que se tienen los datos, se ingresan en la base de datos
+		//Se retorna el id del concepto
+		try{
+			idConcepto = KWFacadeInjection.insertarConcepto(concepto);
+		}
+		catch (Exception e){
+			System.out.println(e);
+			return "ERROR CONCEPTO NO INSERTADO";
+		}//Ahora se inserta la lista de sinónimos
+		for (JsonValue sinonimo : jsonPalabras) {
+			SFInjection.insertarSinonimo(sinonimo.toString(), idConcepto);
+		}
+		return "true";
+		
 	}
+	@POST
+	@Path("/deleteWord")
+	@Produces("application/json")
+	@Consumes("application/json")
+	public String borrarConcepto(JsonObject concepto){
+		//Para ello se deben dar 3 pasos: Borrar estadisticas
+		//Borrar Sinonimos, borrar palabra
+		String palabra = concepto.getString("concepto");
+		int idConcepto = KWFacadeInjection.buscarWord(palabra);
+		CSFFacadeInjection.borrarStats(idConcepto);
+		SFInjection.borrarSinonimos(idConcepto);
+		KWFacadeInjection.deleteWord(idConcepto);
+		return "ok";
+		
+	}
+	}
+

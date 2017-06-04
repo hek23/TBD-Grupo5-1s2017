@@ -7,6 +7,8 @@ package tk.ww3app.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -53,7 +55,9 @@ public class Keyword implements Serializable {
     @ManyToOne(optional = false)
     private User creator;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "keyword")
-    private Collection<CountryStat> countryStatCollection;
+    private List<CountryStat> countryStatCollection;
+    @OneToMany(mappedBy = "concepto")
+    private List<Sinonimos> sinonimosList;
 
     public Keyword() {
     }
@@ -92,11 +96,11 @@ public class Keyword implements Serializable {
     }
 
     @XmlTransient
-    public Collection<CountryStat> getCountryStatCollection() {
+    public List<CountryStat> getCountryStatCollection() {
         return countryStatCollection;
     }
 
-    public void setCountryStatCollection(Collection<CountryStat> countryStatCollection) {
+    public void setCountryStatCollection(List<CountryStat> countryStatCollection) {
         this.countryStatCollection = countryStatCollection;
     }
 

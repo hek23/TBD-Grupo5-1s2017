@@ -23,6 +23,8 @@ public interface CountryStatFacade {
 	
 	public List<Object[]> findByCountry(String country);
 
+	public void borrarStats(int idConcepto);
+	
 	public int count();
 
 }

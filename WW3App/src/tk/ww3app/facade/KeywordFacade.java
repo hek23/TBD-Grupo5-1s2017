@@ -21,6 +21,13 @@ public interface KeywordFacade {
 
 	public List<Keyword> findRange(int[] range);
 
+	public void deleteWord(int idconcepto);
+	
+	public int buscarWord(String concepto);
+	
+	
+	public int insertarConcepto(String concepto);
+	
 	public int count();
 
 }

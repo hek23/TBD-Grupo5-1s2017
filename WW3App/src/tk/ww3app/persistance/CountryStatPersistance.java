@@ -35,5 +35,10 @@ public class CountryStatPersistance extends AbstractFacade<CountryStat> implemen
 		return resultado;
 	
 		}
-
+	public void borrarStats(int idConcepto){
+	
+		Query query = this.em.createNativeQuery("DELETE FROM CountryStat where CountryStat.Keyword = ?");
+		query.setParameter(1, idConcepto);
+		query.executeUpdate();
+	}
 }

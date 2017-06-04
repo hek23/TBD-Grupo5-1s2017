@@ -16,31 +16,34 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 
 import tk.ww3app.facade.KeywordResumeFacade;
+import tk.ww3app.facade.SinonimosFacade;
 import tk.ww3app.model.KeywordResume;
+import tk.ww3app.model.Sinonimos;
 
 @Path("/krs")
 @ApplicationPath("/")
 
-public class KeywordResumeService extends Application{
+public class SinonimosService extends Application{
 	
 	@EJB 
-	KeywordResumeFacade FacadeInjection;
+	SinonimosFacade SinonimosInjection;
 	
 	Logger logger = Logger.getLogger(KeywordResume.class.getName());
 	
 	@GET
-	@Path("/listwordsresume")
+	@Path("/listsinonimos")
 	@Produces("application/jsonaa")
-	public List<KeywordResume> findAll(){
-		return FacadeInjection.findAll();
+	public List<Sinonimos> findAll(){
+		return SinonimosInjection.findAll();
 	}
 	
 	@GET
-    @Path("/getwordresume")
+    @Path("/getsinonimo")
     @Produces("application/json")
-    public KeywordResume find(@QueryParam("id") Integer id) {
-        return FacadeInjection.find(id);
+    public Sinonimos find(@QueryParam("id") Integer id) {
+        return SinonimosInjection.find(id);
     }
+	
 	
 	
 

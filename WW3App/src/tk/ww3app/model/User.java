@@ -7,6 +7,8 @@ package tk.ww3app.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -60,8 +62,9 @@ public class User implements Serializable {
     @Column(name = "privileges")
     private String privileges;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
-    private Collection<Keyword> keywordCollection;
-
+    private List<Keyword> keywordCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
+    private List<Keyword> keywordList;
     public User() {
     }
 
@@ -120,11 +123,11 @@ public class User implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Keyword> getKeywordCollection() {
+    public List<Keyword> getKeywordCollection() {
         return keywordCollection;
     }
 
-    public void setKeywordCollection(Collection<Keyword> keywordCollection) {
+    public void setKeywordCollection(List<Keyword> keywordCollection) {
         this.keywordCollection = keywordCollection;
     }
 
