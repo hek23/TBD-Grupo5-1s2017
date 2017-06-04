@@ -25,6 +25,8 @@ public interface CountryStatFacade {
 
 	public void borrarStats(int idConcepto);
 	
+	public List<Object[]> getRankInfo();
+	
 	public int count();
 
 }

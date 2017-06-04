@@ -128,15 +128,12 @@ public class AuxiliarService extends Application{
 		List<Country> lc = new ArrayList<Country>();
 		lc = CFFacadeInjection.findAll();
 		JsonArrayBuilder arrayext = Json.createArrayBuilder();
-		System.out.println(ctryName);
 		List<Object[]> lcs = CSFFacadeInjection.findByCountry(ctryName);
 		for (Object[] obj : lcs){
-			System.out.println(obj);
 			JsonObjectBuilder builder = Json.createObjectBuilder();
 			Double tweets = (Double)obj[1] + (Double)obj[0];
 			int tweetctd = tweets.intValue();
 			JsonObject punto = builder.add("fecha",obj[2].toString()).add("cantidad",tweetctd).build();
-			arrayext.add(punto);
 			arrayext.add(punto);
 		}
 		
@@ -200,7 +197,22 @@ public class AuxiliarService extends Application{
 		SFInjection.borrarSinonimos(idConcepto);
 		KWFacadeInjection.deleteWord(idConcepto);
 		return "ok";
-		
 	}
+	@GET
+	@Path("/rankingJSON")
+	@Produces("application/json")
+	public JsonArray ranking(){
+		JsonArrayBuilder array = Json.createArrayBuilder();
+		JsonObjectBuilder builder = Json.createObjectBuilder(); 
+		List<Object[]> rankInfo = CSFFacadeInjection.getRankInfo();
+		for (Object[] info : rankInfo){
+			//En el primer elemento viene la suma o puntaje, el segundo el pais
+			Double puente = (Double)info[0];
+			array.add(builder.add("Pais", info[1].toString()).add("Puntaje",puente.intValue()).build());
+		}
+		return array.build();
 	}
-
+}
+	
+	
+	

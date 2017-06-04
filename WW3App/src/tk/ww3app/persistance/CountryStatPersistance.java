@@ -41,4 +41,9 @@ public class CountryStatPersistance extends AbstractFacade<CountryStat> implemen
 		query.setParameter(1, idConcepto);
 		query.executeUpdate();
 	}
+	
+	public List<Object[]> getRankInfo(){
+		List<Object[]> resultado =this.em.createNativeQuery("SELECT Sum(CountryStat.RetweetsCount+ CountryStat.TweetsCount) AS puntaje, Country.Name FROM WW3App.CountryStat INNER JOIN Country ON (CountryStat.Country = Country.idCountry) group by CountryStat.Country ORDER BY puntaje DESC;").getResultList();
+		return resultado;
+	}
 }
