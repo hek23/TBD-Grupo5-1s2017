@@ -159,7 +159,7 @@ public class AuxiliarService extends Application{
 		}
 		catch (Exception e){
 			System.out.println(e);
-			return "ERROR PALABRAS";
+			return "ERROR INSERTE SINONIMOS";
 		}
 		//Ahora se extrae el concepto
 		try{
@@ -167,7 +167,7 @@ public class AuxiliarService extends Application{
 		}
 		catch (Exception e){
 			System.out.println(e);
-			return "ERROR CONCEPTO";
+			return "ERROR. INSERTE CONCEPTO";
 		}
 		//Ya que se tienen los datos, se ingresan en la base de datos
 		//Se retorna el id del concepto
@@ -176,10 +176,15 @@ public class AuxiliarService extends Application{
 		}
 		catch (Exception e){
 			System.out.println(e);
-			return "ERROR CONCEPTO NO INSERTADO";
+			return "ERROR CONCEPTO YA EXISTENTE O MUY LARGO";
 		}//Ahora se inserta la lista de sinónimos
-		for (JsonValue sinonimo : jsonPalabras) {
-			SFInjection.insertarSinonimo(sinonimo.toString(), idConcepto);
+		try{
+			for (JsonValue sinonimo : jsonPalabras) {
+				SFInjection.insertarSinonimo(sinonimo.toString(), idConcepto);
+			}
+		}
+		catch (Exception e){
+			return "ERROR INGRESE SINONIMOS O LIMITE SU LONGITUD";
 		}
 		return "true";
 		
