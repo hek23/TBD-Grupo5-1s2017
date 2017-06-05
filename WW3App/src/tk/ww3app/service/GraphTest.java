@@ -1,5 +1,8 @@
 /*package tk.ww3app.service;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
@@ -49,7 +52,11 @@ public class GraphTest extends Application{
     }
     
     //SERVICIOS
-    public void get
+    /*public JsonObject getAllInfo(){
+    	
+    	JsonArrayBuilder arrayNodos = Json.createArrayBuilder();
+    	JsonObjectBuilder builderExterno = Json.createObjectBuilder();
+    }
     public static void main(String[] args) {
     	Estados Unidos
     	ID 1
