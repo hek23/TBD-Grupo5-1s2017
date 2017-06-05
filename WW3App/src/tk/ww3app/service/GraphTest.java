@@ -52,10 +52,11 @@ public class GraphTest extends Application{
     }
     
     //SERVICIOS
-    /*public JsonObject getAllInfo(){
-    	
+    public JsonObject getAllInfo(){	
     	JsonArrayBuilder arrayNodos = Json.createArrayBuilder();
     	JsonObjectBuilder builderExterno = Json.createObjectBuilder();
+    	
+    
     }
     public static void main(String[] args) {
     	Estados Unidos
