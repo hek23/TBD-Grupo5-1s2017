@@ -1,29 +1,20 @@
-/*package tk.ww3app.service;
+package tk.ww3app.service;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Application;
+import org.neo4j.driver.v1.*;
 
-import org.neo4j.driver.v1.AuthTokens;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.GraphDatabase;
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementResult;
+import static org.neo4j.driver.v1.Values.parameters;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-@Path("/grafo")
-@ApplicationPath("/")
-
-public class GraphTest extends Application{
+public class GraphTest {
 	private Driver driver;
     private Session session;
     
     public GraphTest(){
-    	this.driver =GraphDatabase.driver( "bolt://localhost", AuthTokens.basic( "neo4j", "neo4j" ));
+    	this.driver = GraphDatabase.driver( "bolt://localhost", AuthTokens.basic( "neo4j", "441441" ));
     	this.session= driver.session();
     }
     
@@ -38,30 +29,106 @@ public class GraphTest extends Application{
         this.driver.close();
     }
     
-    public void crearPais(String nombrePais, int tweets, int retweets, int idPais){
-    	String consulta = "CREATE ("+String.valueOf(idPais)+ 
-    			":Pais {pais:"+nombrePais+", tweetsOriginados:"+ 
-    			String.valueOf(tweets)+", retweetsOriginados:"+ String.valueOf(retweets)+"})";
+    public void crearPais(String nombrePais, int tweets, int idPais){
+    	String consulta = "CREATE (a:Pais {tweetsOriginados:"+ 
+    			String.valueOf(tweets)+ ", idPais:"+String.valueOf(idPais)+ ", pais:'"+nombrePais+"'})";
     	this.session.run(consulta);
     }
     
     public void crearInfluencia (int paisOrigen, int paisDestino, int retweets){
-    	String consulta = "("+String.valueOf(paisOrigen)+")-[:Influencia {retweets:"+
-    			String.valueOf(retweets)+"}]->("+String.valueOf(paisDestino)+")";
+    	String consulta = "MATCH (a:Pais),(b:Pais) WHERE a.idPais ="+String.valueOf(paisOrigen)+
+    			" AND b.idPais ="+String.valueOf(paisDestino)+""
+    			+" CREATE (a)-[r:Influencia {retweets:"+
+    			String.valueOf(retweets)+"}]->(b)";
     	this.session.run(consulta);
     }
     
-    //SERVICIOS
-    public JsonObject getAllInfo(){	
-    	JsonArrayBuilder arrayNodos = Json.createArrayBuilder();
-    	JsonObjectBuilder builderExterno = Json.createObjectBuilder();
-    	
+    public Connection conexionMySQL(){
+    	Connection con = null;
+        //Statement st = null;
+        //ResultSet rs = null;
+
+        String url = "jdbc:mysql://localhost:3306/WW3App";
+        String user = "root";
+        String password = "root";
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection(url, user, password);
+            return con;
+            }
+        catch (Exception e){
+        	System.out.println(this.getClass().toString());
+        	return null;
+        }
+    }
+
+    public void obtenerNodosSQL (java.sql.Connection con){ 
+    	java.sql.Statement st = null;
+		try {
+			st = con.createStatement();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        String sql = "SELECT c.idCountry as CountryID, SUM(tweetsqty) as sumTweets, c.Name FROM Influence inner join Country c on  (Influence.origin = c.idCountry) GROUP BY c.idCountry";
+        ResultSet rs = null;
+		try {
+			rs = st.executeQuery(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			while (rs.next()){
+				this.crearPais(rs.getString(3), rs.getInt(2), rs.getInt(1));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
     
+    public void obtenerArcosSQL (java.sql.Connection con){ 
+    	java.sql.Statement st = null;
+		try {
+			st = con.createStatement();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	String sql = "SELECT tweetsqty, c.idCountry, d.idCountry FROM Influence inner join Country c on (Influence.origin = c.idCountry) inner join Country d on (d.idCountry = Influence.destiny)";
+    	ResultSet rs = null;
+    	int i = 0;
+    	try {
+			rs = st.executeQuery(sql);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			while (rs.next()){
+				this.crearInfluencia(rs.getInt(2), rs.getInt(3), rs.getInt(1));
+				i = i+1;
+			}
+			System.out.println(String.valueOf(i));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
-    public static void main(String[] args) {
-    	Estados Unidos
-    	ID 1
-    	Tamaño 100
-    	Target XX
+    
+    public void showGraph(){
+    	
     }
-}*/
+    public void cerrarConexion(java.sql.Connection con){
+    	try {
+			con.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+}
