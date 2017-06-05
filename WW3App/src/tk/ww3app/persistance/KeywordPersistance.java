@@ -45,6 +45,7 @@ public class KeywordPersistance extends AbstractFacade<Keyword> implements Keywo
 	public void deleteWord(int idconcepto){
 		Query query = this.em.createNativeQuery("DELETE FROM Keyword where Keyword.idkeyword = ?");
 		query.setParameter(1, idconcepto);
+		query.executeUpdate();
 	}
 
 }

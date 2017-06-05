@@ -32,7 +32,7 @@ public class SinonimosService extends Application{
 	
 	@GET
 	@Path("/listsinonimos")
-	@Produces("application/jsonaa")
+	@Produces("application/json")
 	public List<Sinonimos> findAll(){
 		return SinonimosInjection.findAll();
 	}

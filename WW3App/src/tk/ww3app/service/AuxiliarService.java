@@ -68,6 +68,7 @@ public class AuxiliarService extends Application{
 	@Path("/auxiliarJsonFullCake")
 	@Produces("application/json")
 	public CircularGraphInfo getCircularData(){
+		System.out.println("llego solicitus");
 		//Se calcula cuantos paises hay en el gráfico y cuantos tweets hay en total
 		//Para esto se usa la vista CountryResume
 		List<CountryResume> cr = CRFFacadeInjection.findAll();
@@ -118,8 +119,6 @@ public class AuxiliarService extends Application{
 		return lpgi;
 		}
 	
-	
-	
 	@GET
 	@Path("/jsongenerationgraph/{nombrePais}")
 	@Produces("application/json")
@@ -146,8 +145,9 @@ public class AuxiliarService extends Application{
 	@Path("/addWord")
 	@Produces("application/json")
 	@Consumes("application/json")
-	public String addWord(JsonObject palabras){
+	public JsonObject addWord(JsonObject palabras){
 		JsonObject elem = palabras;
+		JsonObjectBuilder builder = Json.createObjectBuilder();
 		//Se sabe que la clave concepto trae el concepto nuevo
 		//La clave palabras trae un arreglo con los sinonimos
 		//Por tanto primero creamos un arreglo de palabras
@@ -159,7 +159,7 @@ public class AuxiliarService extends Application{
 		}
 		catch (Exception e){
 			System.out.println(e);
-			return "ERROR INSERTE SINONIMOS";
+			return builder.add("estado","ERROR INSERTE SINONIMOS").build();
 		}
 		//Ahora se extrae el concepto
 		try{
@@ -167,7 +167,7 @@ public class AuxiliarService extends Application{
 		}
 		catch (Exception e){
 			System.out.println(e);
-			return "ERROR. INSERTE CONCEPTO";
+			return builder.add("estado","ERROR. INSERTE CONCEPTO").build();
 		}
 		//Ya que se tienen los datos, se ingresan en la base de datos
 		//Se retorna el id del concepto
@@ -176,7 +176,7 @@ public class AuxiliarService extends Application{
 		}
 		catch (Exception e){
 			System.out.println(e);
-			return "ERROR CONCEPTO YA EXISTENTE O MUY LARGO";
+			return builder.add("estado","ERROR CONCEPTO YA EXISTENTE O MUY LARGO").build();
 		}//Ahora se inserta la lista de sinónimos
 		try{
 			for (JsonValue sinonimo : jsonPalabras) {
@@ -184,16 +184,16 @@ public class AuxiliarService extends Application{
 			}
 		}
 		catch (Exception e){
-			return "ERROR INGRESE SINONIMOS O LIMITE SU LONGITUD";
+			return builder.add("estado","ERROR INGRESE SINONIMOS O LIMITE SU LONGITUD").build();
 		}
-		return "true";
+		return builder.add("estado","ok").build();
 		
 	}
 	@POST
 	@Path("/deleteWord")
 	@Produces("application/json")
 	@Consumes("application/json")
-	public String borrarConcepto(JsonObject concepto){
+	public JsonObject borrarConcepto(JsonObject concepto){
 		//Para ello se deben dar 3 pasos: Borrar estadisticas
 		//Borrar Sinonimos, borrar palabra
 		String palabra = concepto.getString("concepto");
@@ -201,7 +201,8 @@ public class AuxiliarService extends Application{
 		CSFFacadeInjection.borrarStats(idConcepto);
 		SFInjection.borrarSinonimos(idConcepto);
 		KWFacadeInjection.deleteWord(idConcepto);
-		return "ok";
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		return builder.add("estado", "ok").build();
 	}
 	@GET
 	@Path("/rankingJSON")
