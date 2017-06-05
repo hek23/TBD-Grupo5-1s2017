@@ -69,7 +69,7 @@ var misDatosTorta = angular.module('angularSpa').controller('linealController',f
                 }
              
                 var dataLineal = {
-                    labels: fechasLineal,
+                    labels: fechasLineal.sort(),
                     datasets: crearDataSet() 
                 }
 

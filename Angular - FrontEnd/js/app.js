@@ -18,6 +18,9 @@ angular.module('angularSpa', [
       templateUrl: 'views/seleccion.html',
       controller: 'seleccionController'
     })
+    .when('/geolocalizacion', {
+      templateUrl: 'views/geolocalizacion.html'
+    })
     .otherwise({
       redirectTo: '/home'
     });
