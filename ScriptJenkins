@@ -1,0 +1,10 @@
+pkill -f TwitterCollector.py
+pkill -f TwitterFilter.py
+pkill -f TwitterMySQLResume.py
+#INICIAR SCRIPTS DE PYTHON
+
+#INICIAR APP GRAFO
+
+#INICIAR DEPLOY
+
+#
