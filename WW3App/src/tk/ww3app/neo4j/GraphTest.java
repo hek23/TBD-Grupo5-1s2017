@@ -1,4 +1,4 @@
-package tk.ww3app.service;
+package tk.ww3app.neo4j;
 
 import org.neo4j.driver.v1.*;
 

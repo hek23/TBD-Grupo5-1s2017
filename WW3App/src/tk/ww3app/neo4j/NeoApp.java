@@ -10,7 +10,7 @@ import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.Session;
 
-import tk.ww3app.service.GraphTest;
+import tk.ww3app.neo4j.GraphTest;
 
 public class NeoApp {
 
