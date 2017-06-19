@@ -1,6 +1,6 @@
 var misDatosTorta = angular.module('angularSpa').controller('linealController',function($scope,$http){
         $scope.importarLineal = function(){
-            $http.get('http://localhost:8080/WW3App/auxiliarJsonFullLinear').success(function(datoLineal){
+            $http.get('http://159.203.84.81:8080/WW3App/auxiliarJsonFullLinear').success(function(datoLineal){
                 $scope.dataLineal = datoLineal;
 
                 var lineal = document.getElementById("myLineChart");

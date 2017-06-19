@@ -9,10 +9,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class GraphTest {
+public class GraphTest { 
 	private Driver driver;
     private Session session;
     
+
     public GraphTest(){
     	this.driver = GraphDatabase.driver( "bolt://localhost", AuthTokens.basic( "neo4j", "441441" ));
     	this.session= driver.session();
@@ -29,8 +30,8 @@ public class GraphTest {
         this.driver.close();
     }
     
-    public void crearPais(String nombrePais, int tweets, int idPais){
-    	String consulta = "CREATE (a:Pais {tweetsOriginados:"+ 
+    public void crearPais(String nombrePais, int tweets, int idPais, String acronimo){
+    	String consulta = "CREATE (a:Pais {abreviatura:'"+ acronimo + "', tweetsOriginados:"+ 
     			String.valueOf(tweets)+ ", idPais:"+String.valueOf(idPais)+ ", pais:'"+nombrePais+"'})";
     	this.session.run(consulta);
     }
@@ -43,11 +44,9 @@ public class GraphTest {
     	this.session.run(consulta);
     }
     
-    public Connection conexionMySQL(){
+    public static Connection conexionMySQL(){
     	Connection con = null;
-        //Statement st = null;
-        //ResultSet rs = null;
-
+ 
         String url = "jdbc:mysql://localhost:3306/WW3App";
         String user = "root";
         String password = "root";
@@ -55,10 +54,11 @@ public class GraphTest {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection(url, user, password);
+            System.out.println("conection");
             return con;
             }
         catch (Exception e){
-        	System.out.println(this.getClass().toString());
+        	System.out.println("fail");
         	return null;
         }
     }
@@ -71,7 +71,7 @@ public class GraphTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        String sql = "SELECT c.idCountry as CountryID, SUM(tweetsqty) as sumTweets, c.Name FROM Influence inner join Country c on  (Influence.origin = c.idCountry) GROUP BY c.idCountry";
+        String sql = "SELECT c.idCountry as CountryID, SUM(tweetsqty) as sumTweets, c.Name, c.Code FROM Influence inner join Country c on  (Influence.origin = c.idCountry) GROUP BY c.idCountry";
         ResultSet rs = null;
 		try {
 			rs = st.executeQuery(sql);
@@ -81,7 +81,7 @@ public class GraphTest {
 		}
         try {
 			while (rs.next()){
-				this.crearPais(rs.getString(3), rs.getInt(2), rs.getInt(1));
+				this.crearPais(rs.getString(3), rs.getInt(2), rs.getInt(1), rs.getString(4).toLowerCase());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -122,6 +122,8 @@ public class GraphTest {
     public void showGraph(){
     	
     }
+    
+    //MATCH (n:Pais)-[r:Influencia]->(m:Pais) WHERE n.idPais=217 RETURN m LIMIT 25
     public void cerrarConexion(java.sql.Connection con){
     	try {
 			con.close();

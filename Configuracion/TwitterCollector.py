@@ -74,6 +74,8 @@ def get_words():
     #Para cada palabra obtenida, se trata y agrega.
     for palabra in wordsSQL:
         words.append(str(palabra[0]))
+    #Ahora se añaden los sinonimos
+    sqlcursor.execute
     #Se retorna la lista de palabras
     return words
 #Funcion para insertar un documento con MongoDB
