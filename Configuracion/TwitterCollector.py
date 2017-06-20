@@ -162,10 +162,10 @@ class TwitterStreamListener(tweepy.StreamListener):
 
 if __name__ == '__main__':
 
-    access_token = "851544787475935233-akXNk9tHrRa5zg7WqVhA2rSeQUjPt8s"
-    access_token_secret = "xvZsXBwHJ62rJWExkiOkjW07yOWKD1O6JOEl1SqAS57sm"
-    consumer_key = "R4qtF2SdkSgKMKG7W7f3hC0o4"
-    consumer_secret = "F6ErlmhH8CADQExGdkNGQkHMI7DLsRfRjVU2V0q7e528Jw6U4G"
+    access_token = "851544787475935233-J2oXwlAFxV1z2Sumaf4U5rVwTvA2AGU"
+    access_token_secret = "lKNMme6n7Saxqnr8kneci9s3VQpdOxIVlz8VRoYwAHfda"
+    consumer_key = "LqQeTjG2SM6ruy400IQ9U2TwP"
+    consumer_secret = "iTD5jtDCzvLtd6SbAtMO40Aw236wm792CVILLyihPvV4RshuL6"
 
     # Authentication
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)

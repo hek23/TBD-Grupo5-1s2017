@@ -34,7 +34,7 @@ def fechaString():
         #Ahora se ve que dia queda
         if mes in [1,3,5,7,8,10,12]:
             mes = mes + 31
-        else if mes == 2:
+        elif (mes == 2):
             if (esBisiesto(ano)):
                 mes = mes + 29
             else:
@@ -44,25 +44,25 @@ def fechaString():
         
     if (mes == 1):
         mes = "Jan"
-    else if (mes == 2):
+    elif (mes == 2):
         mes = "Feb"
-    else if (mes == 3):
+    elif (mes == 3):
         mes = "Mar"
-    else if (mes == 4):
+    elif (mes == 4):
         mes = "Abr"
-    else if (mes == 5):
+    elif (mes == 5):
         mes = "May"
-    else if (mes == 6):
+    elif (mes == 6):
         mes = "Jun"
-    else if (mes == 7):
+    elif (mes == 7):
         mes = "Jul"
-    else if (mes == 8):
+    elif (mes == 8):
         mes = "Aug"
-    else if (mes == 9):
+    elif (mes == 9):
         mes = "Sep"
-    else if (mes == 10):
+    elif (mes == 10):
         mes = "Oct"
-    else if (mes == 11):
+    elif (mes == 11):
         mes = "Nov"
     else:
         mes = "Dic"
@@ -104,7 +104,7 @@ def mongoCountRetweetFromTo(originCode, destinyCode):
     client = MongoClient('localhost', 27017)
     db = client.politica
     #Primero se sacan todos los retweets originados en el pais "destiny" (destino)
-    count = db.tweets.count({"$and":[{"place.country_code": destinyCode}, {"rt.original_id": {"$ne":"None"}}, {"rt.origin_countryCode": originCode}]})
+    count = db.tweets.count({"$and":[{"place.country_code": destinyCode}, {"rt.original_id": {"$ne":"None"}}, {"rt.origin_countryCode": originCode  }]})
     return count
 
 def mongoCountRetweetFromToConcept(originCode, destinyCode, concept):
@@ -185,8 +185,33 @@ def makeCountResume():
     return 0
 
 def makeInfluenceResume():
-    #Pendiente
-    return 0
+    #Se inicializa la conexión a la base de datos
+    #Se crea el conector de SQL
+    mysqldatabase = MySQLdb.connect(host="localhost",    # your host, usually localhost
+                         user="root",         # your username
+                         passwd="root",  # your password
+                         db="WW3App")
+    #Se crea el cursor para ingresar datos
+    #Se obtienen los codigos de paises
+    sqlcursor = mysqldatabase.cursor()
+    sqlcursor.execute("SELECT Country.Code FROM Country")
+    codes = sqlcursor.fetchall()
+    codigos=[]
+    for i in codes:
+        codigos.append(i[0])
+    idOrigin = 1
+    for origin in codigos:
+        idDestiny = 1
+        for destiny in codigos:
+            tweets = mongoCountRetweetFromTo(origin, destiny)
+            if(1>tweets):
+                print "No hay influencia entre ", origin, destiny
+            else:
+                sqlcursor.execute("""INSERT INTO Influence (origin, destiny, tweetsqty) VALUES (%s, %s, %s)""",(idOrigin, idDestiny, tweets))
+                mysqldatabase.commit()
+            idDestiny = idDestiny + 1
+        idOrigin = idOrigin + 1
+
 
 def getOriginalTweet(tweetid, concept):
     global client
@@ -208,3 +233,4 @@ def getOriginalTweet(tweetid, concept):
 
 client = MongoClient('localhost', 27017)
 print makeCountResume()
+#print makeInfluenceResume()
