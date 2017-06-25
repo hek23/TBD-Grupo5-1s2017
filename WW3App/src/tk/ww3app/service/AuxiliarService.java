@@ -218,6 +218,22 @@ public class AuxiliarService extends Application{
 		}
 		return array.build();
 	}
+	
+	@GET
+	@Path("/mapaCalor")
+	@Produces("application/json")
+	public JsonObject heatMap(){
+		List<JsonObject> array = new ArrayList<JsonObject>();
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		List<Object[]> rankInfo = CSFFacadeInjection.getRankInfo();
+		for (Object[] info : rankInfo){
+			//En el primer elemento viene la suma o puntaje, el segundo el pais
+			Double puente = (Double)info[0];
+			builder.add(info[1].toString(), puente.intValue());
+		}
+		return builder.build();
+		
+	}
 }
 	
 	
