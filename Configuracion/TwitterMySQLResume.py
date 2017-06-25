@@ -104,9 +104,8 @@ def mongoCountRetweetConceptCountry(countryCode, concept):
 def mongoCountRetweetFromTo(originCode, destinyCode):
     client = MongoClient('localhost', 27017)
     db = client.politica
-    fecha = fechaString()
     #Primero se sacan todos los retweets originados en el pais "destiny" (destino)
-    count = db.tweets.count({"$and":[{"place.country_code": destinyCode}, {"rt.original_id": {"$ne":"None"}}, {"rt.origin_countryCode": originCode  }]})
+    count = db.tweets.count({"$and":[{"place.country_code": destinyCode}, {"rt.original_id": {"$ne":"None"}}, {"rt.origin_countryCode": originCode}]})
     return count
 
 def mongoCountRetweetFromToConcept(originCode, destinyCode, concept):
@@ -208,7 +207,7 @@ def makeInfluenceResume():
             if(1>tweets):
                 print "No hay influencia entre ", origin, destiny
             else:
-                sqlcursor.execute("""INSERT INTO Influence (origin, destiny, tweetsqty) VALUES (%s, %s, %s)""",(idOrigin, idDestiny, tweets))
+                sqlcursor.execute("""REPLACE INTO Influence (origin, destiny, tweetsqty) VALUES (%s, %s, %s)""",(idOrigin, idDestiny, tweets))
                 mysqldatabase.commit()
             idDestiny = idDestiny + 1
         idOrigin = idOrigin + 1
