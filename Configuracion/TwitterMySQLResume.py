@@ -93,6 +93,7 @@ def mongoCountRetweetConceptCountry(countryCode, concept):
     client = MongoClient('localhost', 27017)
     db = client.politica
     count = 0
+    fecha = fechaString()
     retweets = db.tweets.find({"$and": [{"place.country_code" : str(countryCode)}, {"rt.original_id": {"$ne":"None"}},{"created_at":{"$regex": fecha}}]})
     #Se debe ver si el tweet original habla del concepto
     for retweet in retweets:
