@@ -86,14 +86,14 @@ def mongoCountTweetConceptCountry(countryCode, concept):
     #Se extraen y cuentan los tweets (no retweets) que hablan de un concepto y son de un pais determinado
     db = client.politica
     fecha = fechaString()
-    count = db.tweets.count({"$and": [{"place.country_code" : str(countryCode)}, {"rt.original_id": "None"}, {"text":{"$regex": str(concept)}}]})
+    count = db.tweets.count({"$and": [{"place.country_code" : str(countryCode)}, {"rt.original_id": "None"}, {"text":{"$regex": str(concept)}}, {"created_at":{"$regex": fecha}}]})
     return count
 
 def mongoCountRetweetConceptCountry(countryCode, concept):
     client = MongoClient('localhost', 27017)
     db = client.politica
     count = 0
-    retweets = db.tweets.find({"$and": [{"place.country_code" : str(countryCode)}, {"rt.original_id": {"$ne":"None"}}]})
+    retweets = db.tweets.find({"$and": [{"place.country_code" : str(countryCode)}, {"rt.original_id": {"$ne":"None"}},{"created_at":{"$regex": fecha}}]})
     #Se debe ver si el tweet original habla del concepto
     for retweet in retweets:
         if getOriginalTweet(retweet['tweet_id'], concept):
@@ -103,6 +103,7 @@ def mongoCountRetweetConceptCountry(countryCode, concept):
 def mongoCountRetweetFromTo(originCode, destinyCode):
     client = MongoClient('localhost', 27017)
     db = client.politica
+    fecha = fechaString()
     #Primero se sacan todos los retweets originados en el pais "destiny" (destino)
     count = db.tweets.count({"$and":[{"place.country_code": destinyCode}, {"rt.original_id": {"$ne":"None"}}, {"rt.origin_countryCode": originCode  }]})
     return count
@@ -179,7 +180,6 @@ def makeCountResume():
             retweets = mongoCountRetweetConceptCountry(pais, keyword)
             sqlcursor.execute("""INSERT INTO CountryStat (RetweetsCount, TweetsCount, Country, Keyword) VALUES (%s, %s, %s, %s)""", (retweets, tweets, countryId, keywordId))
             mysqldatabase.commit()
-            print (keyword, pais)
             countryId = countryId + 1
         keywordId = keywordId + 1
     return 0
@@ -232,5 +232,5 @@ def getOriginalTweet(tweetid, concept):
             return False
 
 client = MongoClient('localhost', 27017)
-print makeCountResume()
-#print makeInfluenceResume()
+makeCountResume()
+makeInfluenceResume()
