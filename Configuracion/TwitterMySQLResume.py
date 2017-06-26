@@ -233,4 +233,5 @@ def getOriginalTweet(tweetid, concept):
 
 client = MongoClient('localhost', 27017)
 makeCountResume()
+print "Generando Influencias"
 makeInfluenceResume()
