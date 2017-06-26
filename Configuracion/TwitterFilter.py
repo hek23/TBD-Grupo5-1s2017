@@ -169,8 +169,9 @@ def twitterFilter(statusJSON):
         'origin_countryCode': "None"
     },
     #Se agregan los hashtags que posee el tweet
-    'hashtags': []
+    'hashtags': [],
     #Se indica el tipo de referencia (?)
+    'concepto': 3
     }
     #NOTA: Se tiene una posibilidad de ubicar datos no presentes en el tweet,
     #Pero no se utiliza por ahora, dada la limitación de datos.

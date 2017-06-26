@@ -145,7 +145,7 @@ def getAllKeywords():
     #Se crea el cursor para obtener datos
     sqlcursor = mysqldatabase.cursor()
     #Se ejecuta la consulta para obtener las palabras clave
-    sqlcursor.execute("SELECT Keyword.word FROM Keyword ORDER BY Keyword.idKeyword")
+    sqlcursor.execute("SELECT Keyword.word FROM Keyword")
     #Se rescatan dichas palabras desde el cursor.
     wordsSQL = sqlcursor.fetchall()
     #Se procesa el resultado del cursor, para crear el formato solicitado por la librería
@@ -178,8 +178,9 @@ def makeCountResume():
         for pais in paises:
             tweets = mongoCountTweetConceptCountry(pais, keyword)
             retweets = mongoCountRetweetConceptCountry(pais, keyword)
-            sqlcursor.execute("""INSERT INTO CountryStat (RetweetsCount, TweetsCount, Country, Keyword) VALUES (%s, %s, %s, %s)""", (retweets, tweets, countryId, keywordId))
-            mysqldatabase.commit()
+            if (tweets>0 and retweets>0):
+                sqlcursor.execute("""INSERT INTO CountryStat (RetweetsCount, TweetsCount, Country, Keyword) VALUES (%s, %s, %s, %s)""", (retweets, tweets, countryId, keywordId))
+                mysqldatabase.commit()
             countryId = countryId + 1
         keywordId = keywordId + 1
     return 0
@@ -204,9 +205,8 @@ def makeInfluenceResume():
         idDestiny = 1
         for destiny in codigos:
             tweets = mongoCountRetweetFromTo(origin, destiny)
-            if(1>tweets):
-                print "No hay influencia entre ", origin, destiny
-            else:
+            if(tweets>0):
+                #print "No hay influencia entre ", origin, destiny
                 sqlcursor.execute("""REPLACE INTO Influence (origin, destiny, tweetsqty) VALUES (%s, %s, %s)""",(idOrigin, idDestiny, tweets))
                 mysqldatabase.commit()
             idDestiny = idDestiny + 1
