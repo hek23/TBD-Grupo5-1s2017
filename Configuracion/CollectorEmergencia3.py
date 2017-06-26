@@ -86,7 +86,7 @@ def mongo_queue_insert(doc):
     client = MongoClient('localhost', 27017)
     db = client.cola
     #Se procede con la inserción Solo si tiene locación.
-    db.tweets.insert(doc)
+    db.Concepto3.insert(doc)
     return 0
     #Se retorna el id del documento insertado
 

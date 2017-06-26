@@ -65,7 +65,7 @@ def get_words():
     #Se crea el cursor para obtener datos
     sqlcursor = mysqldatabase.cursor()
     #Se ejecuta la consulta para obtener las palabras clave
-    sqlcursor.execute("SELECT Sinonimos.sinonimo FROM Sinonimos where concepto = 3")
+    sqlcursor.execute("SELECT Sinonimos.sinonimo FROM Sinonimos where concepto = 6")
     #Se rescatan dichas palabras desde el cursor.
     wordsSQL = sqlcursor.fetchall()
     #Se procesa el resultado del cursor, para crear el formato solicitado por la librería
@@ -86,7 +86,7 @@ def mongo_queue_insert(doc):
     client = MongoClient('localhost', 27017)
     db = client.cola
     #Se procede con la inserción Solo si tiene locación.
-    db.tweets.insert(doc)
+    db.Concepto6.insert(doc)
     return 0
     #Se retorna el id del documento insertado
 
